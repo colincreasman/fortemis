@@ -1,0 +1,14 @@
+# Misc
+**/*.DS_Store
+**/*.vscode*
+firmware/
+
+# Local nix / west build environment (created by `just init` / `just build`)
+.build
+.direnv
+.west
+modules
+zephyr
+zmk
+draw/base.yaml
+draw/overview.yaml
