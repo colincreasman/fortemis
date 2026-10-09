@@ -12,9 +12,9 @@ and progress. Newest entries are at the bottom. Requirement IDs (L1, E4, C1, …
 | Reference geometry (Sweep, TOTEM, Forager) | Extracted and checked |
 | Controller and diode decision | Decided: XIAO nRF52840 **Plus**, no diodes (D4) |
 | Power switch part | Chosen: MSK12C02 (TOTEM's part) on a PCB tab through the base wall (D6) |
-| Ergogen layout (`ergogen/config.yaml`) | Done (v0.3.0): 36 keys, board outline, controller, power-switch tab, screw nuts and battery placed |
-| PCB routing, DRC, fabrication files | Done: both halves routed, KiCad DRC 0 errors / 0 warnings / 0 unconnected. Gerbers, and BOM and placement files for JLCPCB assembly, in `pcb/fab/` |
-| Case STLs | Done: `case/` has a top plate and a base for each half, checked against models of the components (`ergogen/tools/case.py`) |
+| Ergogen layout (`ergogen/config.yaml`) | Done (v0.4.0): 36 keys, thumbs on the Totemist's thumb arc 15 mm farther out (D3, revised 2026-10-09), board outline, controller, power-switch tab, screw nuts and battery placed |
+| PCB routing, DRC, fabrication files | Done (v0.4.0): both halves routed, KiCad DRC 0 errors / 0 warnings / 0 unconnected. Gerbers, and BOM and placement files for JLCPCB assembly, in `pcb/fab/` |
+| Case STLs | Done (v0.4.0): `case/` has a top plate and a base for each half, checked against models of the components (`ergogen/tools/case.py`) |
 | ZMK firmware | Done: shield and config in this repository (ZMK v0.3.0), standalone and PandaKB dongle modes, ZMK Studio. All six images build and every key traces to the right PCB switch; not yet tried on hardware. |
 | Build guide and parts list | Done: [build-guide.md](build-guide.md), with links for every part |
 
@@ -102,6 +102,9 @@ exactly as on the Forager:
 The inner column is 3 mm lower than on the Forager (Sweep stagger), and the thumbs move down with
 it, so the gap between the thumbs and the main keys stays the same. Whether to add a 3rd thumb key
 will be decided once the outline is drawn: only if the board barely grows.
+
+*Revised 2026-10-09 (v0.4.0): the thumbs now sit on the Totemist's thumb arc, 15 mm farther out
+than the Totemist's own thumbs. See [Thumb arc moved out](#2026-10-09-thumb-arc-moved-out-v040).*
 
 **D4, controller and diodes (E1, E4; C1 has priority).** Fortemis uses the **Seeed XIAO nRF52840
 Plus**, wired without diodes (one pin per key).
@@ -242,8 +245,9 @@ XIAO Plus's 19 free pins, with no diodes, so no new PCB requirement.
 
 The outline follows the Forager's recipe: a hull around the keys (18 × 17 mm each), the controller
 and the screw nuts, 2.25 mm outside them, with the thumb keys as a second hull merged in. Outside
-corners are rounded to r2.25 and inside corners to r3.75. Each PCB is 124.4 × 101.0 mm including the
-power-switch tab (the Forager's is 114.6 × 96.3 mm).
+corners are rounded to r2.25 and inside corners to r3.75. Each PCB was 124.4 × 101.0 mm including the
+power-switch tab (the Forager's is 114.6 × 96.3 mm). Since the thumbs moved out in v0.4.0, it is
+145.5 × 119.7 mm.
 
 | Part | Placement | Why |
 |---|---|---|
@@ -308,27 +312,36 @@ Both halves are routed by script, so a layout change only needs a re-run:
 
 ```sh
 python3 ergogen/tools/pcb.py build   # Ergogen -> pcb/<half>.kicad_pcb with JLCPCB's 2-layer rules
-python3 ergogen/tools/pcb.py route   # Freerouting + GND pours, then KiCad DRC
+python3 ergogen/tools/pcb.py route   # Freerouting + GND pours, then KiCad DRC (re-routed until clean)
 python3 ergogen/tools/pcb.py fab     # Gerbers + drill files -> pcb/fab/<half>.zip
 ```
 
 - `route` exports each board from KiCad to Freerouting's format (Specctra DSN).
-  [Freerouting](https://github.com/freerouting/freerouting) 2.5 routes every signal net, and KiCad
-  imports the result.
-- GND is not routed as tracks. `ergogen/tools/pcb_kicad.py` pours it on both copper layers
-  afterwards. All GND pads are on the back, so stitching vias connect the front pour: on a 10 mm
-  grid wherever both pours overlap, plus one in each front island the grid misses.
-- Rules (JLCPCB's standard 2-layer process): 0.2 mm clearance; 0.2 mm tracks, 0.4 mm for the
-  battery, which Freerouting narrows to 0.15 mm (battery 0.3 mm) in places, the minimum the rules
-  allow; 0.6 / 0.3 mm vias; 0.3 mm from copper to the board edge.
+  [Freerouting](https://github.com/freerouting/freerouting) 2.5 routes every net, GND included, and
+  KiCad imports the result. Until v0.4.0, GND was left out and only poured
+  ([why it changed](#2026-10-09-thumb-arc-moved-out-v040)).
+- `ergogen/tools/pcb_kicad.py` then pours GND on both copper layers. All GND pads are on the back,
+  so stitching vias connect the front pour: on a 10 mm grid wherever both pours overlap, plus one in
+  each front island the grid misses. They keep clear of the router's own GND vias.
+- KiCad's DRC checks the result. If the board isn't clean, it is routed again with other
+  Freerouting settings (`ROUTER_TRIES` in `pcb.py`: a higher via cost, a lower one, then a higher
+  rip-up cost) until one passes. `route` fails if none does.
+- Rules (JLCPCB's standard 2-layer process): 0.2 mm clearance; 0.2 mm tracks, 0.4 mm for GND and the
+  battery. Where a full-width track doesn't fit, Freerouting narrows it to 3/4 of its width
+  (0.15 mm, or 0.3 mm for GND and the battery), and sometimes to 3/5 or 1/2. Anything under
+  0.15 mm, the minimum the rules allow, is widened back to 0.15 mm after the import, and the DRC
+  checks that it still clears everything. 0.6 / 0.3 mm vias, 0.7 / 0.35 mm on GND and the battery;
+  0.3 mm from copper to the board edge.
 
 | | Left | Right |
 |---|---|---|
-| Signal vias | 44 | 31 |
-| GND stitching vias | 93 | 97 |
-| Track length | 1423 mm | 1314 mm |
+| Signal vias | 69 | 70 |
+| GND vias: routed + stitching | 2 + 107 | 2 + 104 |
+| Track length: signals + GND | 1600 + 368 mm | 1546 + 401 mm |
 | KiCad DRC | 0 errors, 0 warnings, 0 unconnected | 0 errors, 0 warnings, 0 unconnected |
 | Copper in the antenna keepout | none | none |
+
+*v0.4.0. The first draft's numbers are in the [2026-10-09 entry](#2026-10-09-thumb-arc-moved-out-v040).*
 
 ![Left PCB, back](img/pcb_left_back.png)
 
@@ -380,9 +393,9 @@ fails if a part overlaps any of them or is not a single solid.
 
 | | Forager | Fortemis |
 |---|---|---|
-| Size per half | 117.2 × 98.9 × 8.4 mm | 126.8 × 103.4 × 8.4 mm |
+| Size per half | 117.2 × 98.9 × 8.4 mm | 147.9 × 122.1 × 8.4 mm (v0.4.0; 126.8 × 103.4 mm in the first draft) |
 | Stack | base 6.2 mm (floor 1.0, 3.6 mm under the PCB, wall top flush with the PCB's top), top plate 2.2 mm | same |
-| Plastic per half (plate + base) | 9.4 + 10.6 cm³ | 11.3 + 12.1 cm³, about 29 g of PLA if printed solid |
+| Plastic per half (plate + base) | 9.4 + 10.6 cm³ | 13.0 + 13.2 cm³, about 32 g of PLA if printed solid (first draft: 11.3 + 12.1 cm³) |
 
 The features copy the Forager's, measured from its STEP and STL files:
 
@@ -468,7 +481,7 @@ The keymap is the owner's Forager keymap, moved onto 36 keys:
 | Keys | Bindings |
 |---|---|
 | The 30 main keys | Unchanged |
-| Near and far thumbs | Unchanged, because they sit where the Forager's two thumbs are. Left: Enter, Shift / Tab. Right: Space / NUM layer, Backspace. |
+| Near and far thumbs | Unchanged: they take the place of the Forager's two thumbs. Left: Enter, Shift / Tab. Right: Space / NUM layer, Backspace. |
 | Tuck thumbs (new) | Left: Esc on tap, MED (media) layer on hold. No key reached the MED layer on the Forager. Right: Delete. |
 | Maintenance layer | Held by both near thumbs, the same two keys as the Forager's combo |
 | ZMK Studio unlock (new) | U on the maintenance layer. ZMK keeps Studio locked until a `&studio_unlock` key is pressed, and the Forager keymap has none, so Studio could connect but not change anything. |
@@ -536,3 +549,102 @@ Where to buy, as of 2026-10-08:
 
 The switch footprint, from ceoloide's library, is licensed CC BY-NC-SA 4.0, so the guide notes
 that the PCBs are for personal, non-commercial builds.
+
+## 2026-10-09: Thumb arc moved out (v0.4.0)
+
+After typing on a Totemist, the owner found they hardly ever press its inner thumb key. Their hands
+are large, and bending the thumb in that far is uncomfortable. They asked for Fortemis's thumb keys
+to sit 1–2 cm farther out than the Totemist's, along the same arc. The first draft (v0.3.0, git tag
+`first-draft`) had the Forager's thumbs, which sit 9–13 mm closer in than the Totemist's.
+Requirement L3 is changed to match ([requirements.md](requirements.md)).
+
+![Thumb keys: v0.4.0, the Totemist and the first draft](img/layout_compare.png)
+
+**Measuring the Totemist.** ErgoMech doesn't publish the Totemist's hardware files, so its thumbs
+were measured from the top-down photo on the seller's product page:
+
+- Each keycap in the photo was found and fitted with a rectangle. The 17 mm key pitch along a
+  column and the 18 mm spacing between columns give the scale: 5.32 pixels per mm.
+- The main keys match TOTEM's to within 0.2 mm. So the thumbs can be measured from the inner bottom
+  key, which is where Fortemis places its thumbs from (requirements §6.4). Fortemis's index home key
+  is 0.2 mm from where TOTEM's is, relative to that key, so the numbers carry over.
+- The three thumb keys are turned 15°, 30° and 45°. They sit on a circle of radius 77 mm, centred
+  25.8 mm toward the pinky side of the inner bottom key and 93.6 mm below it. That is TOTEM's own
+  thumb fan (0°, 15° and 30° on a 77 mm circle) moved one key toward the middle of the keyboard.
+
+**Decision (D3, revised).** Keep the Totemist's circle and its 15° spacing, and move all three keys
+15 mm farther along it (11.2°), the middle of the 1–2 cm asked for. The keys keep their names, pins
+and keymap bindings: tuck, near and far, on D1, D11 and D0.
+
+Thumb key centres relative to the inner bottom key (mm toward the middle of the keyboard, mm down),
+and the key's angle:
+
+| Thumb key | First draft (Forager + tuck) | Totemist | v0.4.0 | v0.4.0 moved from the first draft |
+|---|---|---|---|---|
+| Tuck (innermost) | −15.3, 17.6, 25° | −6.0, 19.3, 15° | 8.2, 24.5, 26.2° | 24.4 mm |
+| Near | 2.7, 21.6, 25° | 12.7, 26.9, 30° | 24.9, 35.6, 41.2° | 26.2 mm |
+| Far | 17.4, 32.8, 25° | 28.8, 38.9, 45° | 38.2, 50.7, 56.2° | 27.4 mm |
+
+- Each v0.4.0 key is 15.0 mm in a straight line from the Totemist key in the same place. The tuck
+  key sits three-quarters of the way from the Totemist's inner thumb key to its middle one.
+- From the index home key, the thumb keys are now 51, 70 and 90 mm away (Totemist 41, 56 and 75 mm;
+  first draft 37, 46 and 63 mm).
+- Neighbouring thumb keycaps are 0.6 mm apart at their closest corners, and the tuck keycap is
+  5.0 mm from the inner bottom keycap.
+
+In `ergogen/config.yaml`, the units `thumb_r`, `thumb_cx` and `thumb_cy` are the Totemist's circle,
+relative to the inner bottom key, and `thumb_arc` is how far past the Totemist's keys ours sit,
+in mm along the arc. The thumb zone's anchor goes to the circle's centre, turns to the tuck key's
+angle and steps out by the radius. Near and far each turn a further 15° about the centre. To try
+another distance, such as 10 or 20 mm, change `thumb_arc` and rebuild everything, then repeat the
+checks below:
+
+```sh
+python3 ergogen/tools/pcb.py build && python3 ergogen/tools/pcb.py route && python3 ergogen/tools/pcb.py fab
+python3 ergogen/tools/case.py
+python3 ergogen/tools/zmk.py
+python3 ergogen/tools/preview_layout.py   # docs/img/layout_compare.png
+```
+
+What changed along with the thumbs:
+
+| Change | Why |
+|---|---|
+| The thumb outline's hull now also takes in the inner and index bottom keys and the bottom-right nut | Joins the thumb arm, now farther from the main keys, solidly to them |
+| The thumb nut moved and turned with the far thumb | It is placed from that key (8.5 mm out and 7.8 mm down in the key's own frame), as before |
+| `mirror` distance 90 → 120 mm | The halves are separate PCBs, so this only spaces them apart in Ergogen's previews and ZMK Studio's key layout, where the thumb arms would otherwise overlap |
+| PCB 124.4 × 101.0 → 145.5 × 119.7 mm; case 126.8 × 103.4 → 147.9 × 122.1 mm per half | The thumb arm reaches 21 mm farther across and 19 mm farther down. That is a cost against C1 (the Forager's size class; its case is 117.2 × 98.9 mm), accepted because the owner asked for the reach. The main keys don't move. |
+
+**Routing.** The new layout showed up two weak spots in `pcb.py route`, now fixed. The
+[PCB routing](#2026-10-08-pcb-routing-ergogentoolspcbpy) entry above describes how it works now.
+
+| Problem | Fix |
+|---|---|
+| On the left half, the XIAO's GND pad was left unconnected. GND was only poured, and the pour around that pad was an island fenced in by the key tracks under the module. | Freerouting now routes GND too, as a 0.4 mm net, so every GND pad gets a track. The pours and stitching vias are added afterwards, as before. |
+| In a test route, a stitching via landed too close to one of the router's GND vias | Stitching vias keep clear of the router's GND vias, and skip front-pour islands that already have one |
+| Where a full-width track doesn't fit, Freerouting 2.5 narrows it, to as little as half its width: 0.10 mm for a 0.2 mm track, below the rules' 0.15 mm | After the import, any track under 0.15 mm is widened to 0.15 mm, and the DRC checks that it still clears everything |
+| Freerouting gives the same result for the same input, but a board KiCad has saved exports in a different order, so a re-route can differ from a fresh build. Some test routes failed the DRC. | `route` checks each board with the DRC. If it isn't clean, the board is routed again with other Freerouting settings, until one passes. |
+
+With these, both halves routed clean on the first try, and no track needed widening.
+
+| | Left, first draft | Left, v0.4.0 | Right, first draft | Right, v0.4.0 |
+|---|---|---|---|---|
+| Signal vias | 44 | 69 | 31 | 70 |
+| GND vias | 93 | 109 | 97 | 106 |
+| Signal track length | 1423 mm | 1600 mm | 1314 mm | 1546 mm |
+| GND track length | none | 368 mm | none | 401 mm |
+| KiCad DRC | clean | clean | clean | clean |
+
+Checks, after rebuilding the PCBs, fabrication files, case and firmware from the new layout:
+
+| Check | Result |
+|---|---|
+| `check_layout.py`: thumb keys | ✅ As in the table above |
+| Closest pair of Choc keycaps | ✅ 0.5 mm, the normal gap |
+| KiCad DRC, both halves | ✅ 0 errors, 0 warnings, 0 unconnected |
+| Antenna keepout | ✅ No copper |
+| `pcb.py fab` | ✅ New Gerber zips and placement files. The BOMs are unchanged. |
+| `case.py`'s checks against the component models | ✅ Pass, with the same closest gaps as before. Top screws at every nut except the thumb nut, as before. |
+| `zmk.py --check` | ✅ The pin lists are unchanged. Only ZMK Studio's key layout changed: the thumbs moved, and the right half is drawn farther right. |
+| All six firmware images build | ✅ |
+| On real hardware | Not yet: no boards have been built |

@@ -6,8 +6,8 @@ the owner already uses:
 | Source board | What Fortemis takes from it |
 |---|---|
 | **Ferris Sweep** (Bling LP build by keebmaker) | Column layout: a tiny footprint and the steep column stagger, especially on the pinky |
-| **TOTEM** by GEIST (and **Totemist**, ErgoMech's closed-source 36-key derivative) | Column splay angles only |
-| **Forager** by carrefinho (sold by PandaKB) | Thumb-cluster placement and **everything else**: enclosed case, how the controller and battery are fitted, reset access, size, sturdiness, weight |
+| **TOTEM** by GEIST (and **Totemist**, ErgoMech's closed-source 36-key derivative) | Column splay angles, and the Totemist's thumb arc (moved farther out, L3) |
+| **Forager** by carrefinho (sold by PandaKB) | **Everything else**: enclosed case, how the controller and battery are fitted, reset access, size, sturdiness, weight. The first draft also took its thumb placement. |
 
 The name combines **For**ager, **Tem** (TOTEM/Totemist) and Ferr**is**.
 
@@ -29,6 +29,8 @@ behind that, are in [design-log.md](design-log.md).
   TOTEM.
 - All three of the owner's boards run ZMK with nearly the same keymap: QWERTY with home-row mods,
   and thumb keys Enter | Shift-Tab | NUM-Space | Backspace.
+- (Added 2026-10-09.) On the Totemist, the owner hardly ever uses the inner thumb keys. Their hands
+  are large, and bending the thumb in as far as those keys need is uncomfortable.
 
 ## 2. Tooling and deliverables
 
@@ -46,7 +48,7 @@ behind that, are in [design-log.md](design-log.md).
 | L1 | **Column stagger** is the same as the Ferris Sweep's. | MUST |
 | L1b | Make the stagger of the **4th and 5th columns** 10–20 % steeper, without straying far from the Sweep. | BONUS |
 | L2 | **Column splay** uses the TOTEM's horizontal splay angles for each column, and nothing else. The stagger still follows L1. Owner's description: "barely perceptible between the first/second/third columns, getting wider toward the pinky column". | MUST |
-| L3 | **Thumb cluster** has the same position (distance and angle) relative to the rest of the keyboard as the Forager's. | MUST |
+| L3 | **Thumb cluster** sits on the same arc as the Totemist's thumb keys, but 1–2 cm farther out along it. *Revised 2026-10-09. It was: the same position (distance and angle) relative to the rest of the keyboard as the Forager's.* | MUST |
 | L4 | 34 keys: 3×5 plus 2 thumbs per half. Adding a 3rd thumb key per half (36 keys) is a bonus, but only if it doesn't enlarge the footprint or add PCB requirements. "Don't sweat it." | MUST (34) / BONUS (36) |
 | L5 | Keys are as close together as **Choc keycaps** allow (Choc spacing). Fitting MX keycaps is not a goal. | MUST |
 
@@ -85,15 +87,18 @@ it is easy to change.
    reset is the XIAO's own button pressed through the case lever. E5 is met by adding a power
    switch that is large enough to use with a finger, and by keeping the Forager's reset lever.
 4. **Thumb position relative to the keyboard** is measured from the bottom key of the inner index
-   column, the nearest key. That keeps the same gap and angle between the thumbs and the main keys
-   as on the Forager.
+   column, the nearest key. The first draft copied the Forager's thumb positions relative to that
+   key; since v0.4.0 the thumb arc is measured from it on the Totemist.
+5. **"1–2 cm farther out along the same arc"** (L3) means the thumb keys stay on the circle the
+   Totemist's thumb keys sit on, 15° apart as on the Totemist, and each moves the same distance
+   along it, away from the main keys. Fortemis uses 15 mm, the middle of the range.
 
 ## 7. Acceptance criteria
 
 - The Ergogen config in `ergogen/` regenerates the layout, outlines and PCB.
 - Layout: stagger matches the Sweep, with L1b applied to ring and pinky. Column angles are
-  0/0/0/4/10° from the inner column outward. Thumbs sit relative to the inner column exactly as on
-  the Forager. No Choc keycaps (17.5 × 16.5 mm) overlap.
+  0/0/0/4/10° from the inner column outward. Thumbs sit on the Totemist's thumb arc, 1–2 cm farther
+  out (L3). No Choc keycaps (17.5 × 16.5 mm) overlap.
 - PCB: routed, passes KiCad DRC with no errors, and has Gerber, drill, BOM and placement outputs
   ready for ordering. Choc v1 hot-swap is required and v2 is supported if possible. Diodeless if
   possible. Power switch on each half. Reset reachable as on the Forager.
