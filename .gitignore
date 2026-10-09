@@ -3,12 +3,24 @@
 **/*.vscode*
 firmware/
 
-# Local nix / west build environment (created by `just init` / `just build`)
+# Local west build environment. Not `zephyr/`: that folder holds module.yml, which makes this
+# repo a ZMK module.
 .build
 .direnv
 .west
 modules
-zephyr
 zmk
 draw/base.yaml
 draw/overview.yaml
+# Python
+__pycache__/
+
+# KiCad
+*.kicad_prl
+*-backups/
+fp-info-cache
+*.lck
+_autosave-*
+
+# pcb.py fab staging; the zips hold the same Gerbers
+pcb/fab/*/
