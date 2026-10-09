@@ -1,0 +1,36 @@
+if SHIELD_FORTEMIS_LEFT
+
+config ZMK_KEYBOARD_NAME
+    default "Fortemis"
+
+# Central in standalone mode. The dongle-mode build of this half overrides it
+# with -DCONFIG_ZMK_SPLIT_ROLE_CENTRAL=n (see build.yaml), which works because
+# this is a plain default rather than a select.
+config ZMK_SPLIT_ROLE_CENTRAL
+    default y
+
+config ZMK_STUDIO
+    default y
+
+endif
+
+if SHIELD_FORTEMIS_DONGLE
+
+config ZMK_KEYBOARD_NAME
+    default "Fortemis Dongle"
+
+config ZMK_SPLIT_ROLE_CENTRAL
+    default y
+
+# Both keyboard halves are peripherals of the dongle.
+config ZMK_SPLIT_BLE_CENTRAL_PERIPHERALS
+    default 2
+
+endif
+
+if SHIELD_FORTEMIS_LEFT || SHIELD_FORTEMIS_RIGHT || SHIELD_FORTEMIS_DONGLE
+
+config ZMK_SPLIT
+    default y
+
+endif

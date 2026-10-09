@@ -1,0 +1,10 @@
+config SHIELD_FORTEMIS_LEFT
+    def_bool $(shields_list_contains,fortemis_left)
+
+config SHIELD_FORTEMIS_RIGHT
+    def_bool $(shields_list_contains,fortemis_right)
+
+# Keyless central that owns the keymap when the keyboard runs through a USB
+# dongle. See fortemis_dongle.overlay.
+config SHIELD_FORTEMIS_DONGLE
+    def_bool $(shields_list_contains,fortemis_dongle)

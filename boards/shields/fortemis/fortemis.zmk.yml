@@ -1,0 +1,11 @@
+file_format: "1"
+id: fortemis
+name: Fortemis
+type: shield
+requires: [seeeduino_xiao_ble]
+features:
+  - keys
+  - studio
+siblings:
+  - fortemis_left
+  - fortemis_right

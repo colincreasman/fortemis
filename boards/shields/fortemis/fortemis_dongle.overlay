@@ -1,0 +1,30 @@
+/*
+ * Fortemis dongle: a keyless central that owns the keymap, combos and host
+ * connection, with both halves as its peripherals.
+ *
+ * Board-agnostic: any BLE-capable ZMK board works as the dongle. The PandaKB
+ * dongle's OLED wiring lives separately in the pandakb_dongle shield.
+ *
+ * All parts of a split must share the exact same matrix transform and physical
+ * layout, so this pulls them in from fortemis.dtsi rather than copying them.
+ */
+
+#include "fortemis.dtsi"
+
+/ {
+    chosen {
+        zmk,kscan = &mock_kscan;
+    };
+
+    mock_kscan: mock_kscan {
+        compatible = "zmk,kscan-mock";
+        columns = <0>;
+        rows = <0>;
+        events = <0>;
+    };
+};
+
+// fortemis.dtsi declares the halves' direct-wired kscan, whose pins are only
+// filled in by each half's own overlay. The dongle has no keys, so the kscan is
+// dropped rather than left behind incomplete.
+/delete-node/ &kscan0;
