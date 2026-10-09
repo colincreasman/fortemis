@@ -4,6 +4,7 @@
   python3 ergogen/tools/pcb.py build     # ergogen -> pcb/<name>.kicad_pcb + .kicad_pro (JLCPCB rules)
   python3 ergogen/tools/pcb.py drc       # KiCad DRC summary for every board in pcb/
   python3 ergogen/tools/pcb.py route     # Freerouting + GND pours -> pcb/<name>.kicad_pcb, then DRC
+                                         # (routed again with other settings until it passes)
   python3 ergogen/tools/pcb.py fab       # gerbers + drill files -> pcb/fab/<name>.zip,
                                          # JLCPCB assembly files -> pcb/fab/<name>_bom.csv, _cpl.csv
 
@@ -19,6 +20,14 @@ BOARDS = ['fortemis_left', 'fortemis_right']
 KICAD_PY = os.environ.get('KICAD_PYTHON',
     '/Applications/KiCad/KiCad.app/Contents/Frameworks/Python.framework/Versions/Current/bin/python3')
 FREEROUTING = 'https://github.com/freerouting/freerouting/releases/download/v2.5.0/freerouting-2.5.0.jar'
+# Freerouting settings tried in turn until a board passes KiCad's DRC. Freerouting gives the same
+# result for the same board every time, so a board it gets wrong is routed again with other costs.
+ROUTER_TRIES = [
+    [],
+    ['--router.scoring.via_costs=100'],
+    ['--router.scoring.via_costs=30'],
+    ['--router.scoring.start_ripup_costs=300'],
+]
 CACHE = pathlib.Path.home() / '.cache' / 'fortemis'
 
 # JLCPCB 2-layer standard capabilities, with some margin
@@ -141,24 +150,32 @@ def java(min_version=25):
 
 
 def route(board):
+    """Route the board, retrying with the next ROUTER_TRIES settings until KiCad's DRC is clean.
+    Returns True if it is."""
     jar, java_bin = freerouting(), java()
     with tempfile.TemporaryDirectory() as d:
         dsn, ses = pathlib.Path(d) / f'{board}.dsn', pathlib.Path(d) / f'{board}.ses'
         kicad('dsn', board, dsn)
-        # one optimizer thread: slower, but the same board every time
-        r = subprocess.run([java_bin, '-jar', str(jar), '-de', str(dsn), '-do', str(ses), '-mt', '1',
-                            '--gui.enabled=false'], cwd=d, capture_output=True, text=True)
-        log = r.stdout + r.stderr
-        done = re.findall(r'Auto-routing stage completed.*?\(\d+ unrouted and \d+ violations\)', log)
-        print(f'{board}: ' + (done[-1] if done else 'Freerouting did not finish'))
-        failed = log[log.find('could not be routed'):].split('\n')[1:20] if 'could not be routed' in log else []
-        for line in failed:
-            if line.strip().startswith(('Net', '-')):
-                print('  ' + line.strip())
-        if r.returncode or not ses.exists():
-            sys.exit(log[-3000:])
-        kicad('ses', board, ses)
-    return drc(board)
+        for extra in ROUTER_TRIES:
+            ses.unlink(missing_ok=True)
+            # one optimizer thread: slower, but the same board every time
+            r = subprocess.run([java_bin, '-jar', str(jar), '-de', str(dsn), '-do', str(ses), '-mt', '1',
+                                '--gui.enabled=false', *extra], cwd=d, capture_output=True, text=True)
+            log = r.stdout + r.stderr
+            done = re.findall(r'Auto-routing stage completed.*?\(\d+ unrouted and \d+ violations\)', log)
+            print(f'{board}{" (" + " ".join(extra) + ")" if extra else ""}: '
+                  + (done[-1] if done else 'Freerouting did not finish'))
+            failed = log[log.find('could not be routed'):].split('\n')[1:20] if 'could not be routed' in log else []
+            for line in failed:
+                if line.strip().startswith(('Net', '-')):
+                    print('  ' + line.strip())
+            if r.returncode or not ses.exists():
+                sys.exit(log[-3000:])
+            kicad('ses', board, ses)
+            if not any(drc(board)):
+                return True
+    print(f'{board}: no router settings gave a clean board')
+    return False
 
 
 def geom(board):
@@ -225,6 +242,7 @@ def fab(board):
 
 
 def main():
+    sys.stdout.reconfigure(line_buffering=True)  # keep our lines in order with KiCad's and Java's
     cmd = sys.argv[1] if len(sys.argv) > 1 else 'build'
     boards = sys.argv[2:] or BOARDS
     if cmd == 'build':
@@ -232,7 +250,8 @@ def main():
     elif cmd == 'drc':
         for b in boards: drc(b)
     elif cmd == 'route':
-        for b in boards: route(b)
+        if not all([route(b) for b in boards]):
+            sys.exit(1)
     elif cmd == 'fab':
         for b in boards: fab(b)
     else:
