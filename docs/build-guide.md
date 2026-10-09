@@ -60,7 +60,7 @@ set:
 |---|---|
 | Layers | 2 |
 | PCB thickness | 1.6 mm. The case is built around it. |
-| Size | Read from the zip: 124.4 × 101.0 mm |
+| Size | Read from the zip: 145.5 × 119.7 mm |
 | Colour, surface finish | Any |
 | Quantity | The minimum (5 at JLCPCB). One of each half is needed. |
 

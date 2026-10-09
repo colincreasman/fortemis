@@ -5,7 +5,9 @@ ZMK config for the Fortemis keyboard (Forager+Totem+FerrisSweep)
 ## Hardware design
 
 Fortemis is designed from scratch with [Ergogen](https://docs.ergogen.xyz), KiCad and a
-Forager-style enclosed case. None has been built yet, so nothing has been tried on hardware.
+Forager-style enclosed case. It has the Ferris Sweep's column stagger, TOTEM's column splay, and
+three thumb keys per half on the Totemist's thumb arc, 15 mm farther out than the Totemist's. None
+has been built yet, so nothing has been tried on hardware.
 
 - [docs/requirements.md](docs/requirements.md): goals and requirements
 - [docs/design-log.md](docs/design-log.md): design decisions and progress
@@ -19,7 +21,7 @@ Rebuild the PCBs from `ergogen/config.yaml` (needs node, KiCad 10 and Java 25+):
 
 ```sh
 python3 ergogen/tools/pcb.py build   # Ergogen -> pcb/*.kicad_pcb
-python3 ergogen/tools/pcb.py route   # Freerouting + GND pours, then DRC
+python3 ergogen/tools/pcb.py route   # Freerouting + GND pours, then DRC (re-routed until clean)
 python3 ergogen/tools/pcb.py drc     # DRC summary only
 python3 ergogen/tools/pcb.py fab     # Gerbers + drill -> pcb/fab/*.zip, BOM + placement CSVs
 ```
