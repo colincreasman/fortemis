@@ -2,7 +2,7 @@
 """Check (and optionally solve) the Fortemis layout produced by Ergogen.
 
 Reports column angles, home-key drops vs the middle column, thumb placement relative to the inner
-column (Forager reference), and the smallest gap between Choc keycaps (17.5 x 16.5 mm).
+bottom key (the thumb arc, decision D3), and the smallest gap between Choc keycaps (17.5 x 16.5 mm).
 
   python3 ergogen/tools/check_layout.py            # check
   python3 ergogen/tools/check_layout.py --solve    # tune ring/pinky stagger units in config.yaml
