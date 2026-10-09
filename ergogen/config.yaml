@@ -1,10 +1,10 @@
-# Fortemis: Ferris Sweep stagger + TOTEM splay + Forager thumbs. Ergogen 4.2.1.
+# Fortemis: Ferris Sweep stagger + TOTEM splay + Totemist thumb arc, 15 mm farther out. Ergogen 4.2.1.
 # Rebuild: npx --yes ergogen@4.2.1 ergogen -o ergogen/output   (from repo root)
 # Paste into https://ergogen.ceoloide.com to edit it visually.
 meta:
   engine: 4.2.1
   name: fortemis
-  version: 0.3.0
+  version: 0.4.0
   author: colincreasman
 
 units:
@@ -39,6 +39,14 @@ units:
   nut_box: 3.5      # 6.2 mm nut pad - 2 * (edge - 0.9)
   bat_l: 31         # area kept for the 301230 LiPo (30 x 12 x 3 mm cell plus tolerance)
   bat_w: 12.5
+  # Thumb arc (decision D3, revised in v0.4.0). The Totemist's three thumb keys sit on a 77 mm
+  # circle, 15 deg apart, around a centre below the board (measured from the seller's top-down
+  # photo, relative to the inner bottom key). Ours run thumb_arc mm farther along that arc.
+  thumb_r: 77
+  thumb_cx: -25.8
+  thumb_cy: -93.6
+  thumb_arc: 15
+  thumb_a0: 15 + thumb_arc / thumb_r * 180 / 3.14159265   # tuck key angle (Totemist: 15 deg)
 
 points:
   zones:
@@ -95,26 +103,24 @@ points:
         home:
         top:
     thumbs:
-      # Forager: near thumb = inner bottom key + (2.749, -21.6), thumbs rotated 25 deg clockwise,
-      # far thumb = 18 mm along and 4 mm down in the rotated frame (decision D3).
-      # Bonus 3rd "tuck" thumb mirrors the far one on the inner side (decision D7); the zone starts
-      # there, so the anchor steps back 18 mm along and 4 mm down from the near thumb.
+      # Three keys on the thumb arc, 15 deg apart (decision D3, revised). The anchor goes to the
+      # arc's centre, turns to the tuck key's angle and steps out by the radius. Near and far
+      # each turn a further 15 deg about that centre, as on the Totemist.
       anchor:
         - ref: matrix_inner_bottom
-          shift: [2.749, -21.6]
-          rotate: -25
-        - shift: [-kx, -4]
+          shift: [thumb_cx, thumb_cy]
+        - orient: -thumb_a0
+          shift: [0, thumb_r]
       key:
         width: kx
         height: ky
-        spread: kx
       columns:
         tuck:
           key: {pin: D1, mirror.pin: D1}
         near:
-          key: {stagger: 4, pin: D11, mirror.pin: D11}
+          key: {spread: 0, splay: -15, origin: [0, -thumb_r], pin: D11, mirror.pin: D11}
         far:
-          key: {stagger: -4, pin: D0, mirror.pin: D0}
+          key: {spread: 0, splay: -15, origin: [0, -thumb_r], pin: D0, mirror.pin: D0}
       rows:
         thumb:
     mcu:
@@ -175,10 +181,11 @@ points:
       # 0.95 mm or more from every switch post, hot-swap socket and screw boss on both halves.
       anchor: {ref: matrix_middle_bottom, shift: [-3.3, -20.85], rotate: 5}
       key: {width: bat_l, height: bat_w}
-  # Right half = mirror image, 90 mm between the inner top keys (two separate PCBs).
+  # Right half = mirror image (two separate PCBs). 120 mm between the inner top keys keeps the
+  # thumb arms apart in previews and in ZMK Studio's layout.
   mirror:
     ref: matrix_inner_top
-    distance: 90
+    distance: 120
 
 outlines:
   # Board outline, Forager style: keys (18 x 17), controller and nuts hulled with an `edge` margin,
@@ -194,7 +201,9 @@ outlines:
   _thumbs_l:
     - what: hull
       concavity: 1000
-      points: [thumbs_tuck_thumb, thumbs_near_thumb, thumbs_far_thumb, nut_thumb]
+      # The inner and index bottom keys and nut_br join the thumb arm to the main block.
+      points: [matrix_index_bottom, matrix_inner_bottom, nut_br, thumbs_tuck_thumb,
+               thumbs_near_thumb, thumbs_far_thumb, nut_thumb]
   _core_l:
     - what: outline
       name: _main_l
@@ -221,7 +230,8 @@ outlines:
   _thumbs_r:
     - what: hull
       concavity: 1000
-      points: [mirror_thumbs_tuck_thumb, mirror_thumbs_near_thumb, mirror_thumbs_far_thumb,
+      points: [mirror_matrix_index_bottom, mirror_matrix_inner_bottom, mirror_nut_br,
+               mirror_thumbs_tuck_thumb, mirror_thumbs_near_thumb, mirror_thumbs_far_thumb,
                mirror_nut_thumb]
   _core_r:
     - what: outline
