@@ -1,7 +1,7 @@
 """KiCad-side steps of `pcb.py route`. Runs under KiCad's bundled Python (needs pcbnew).
 
   pcb_kicad.py dsn <board.kicad_pcb> <out.dsn>   # export a Specctra DSN patched for Freerouting
-  pcb_kicad.py ses <board.kicad_pcb> <in.ses>    # import the routes, pour + stitch GND, save
+  pcb_kicad.py ses <board.kicad_pcb> <in.ses>    # import the routes, widen necks, pour + stitch GND, save
   pcb_kicad.py geom <board.kicad_pcb> <out.json> # outline, footprints and pads for case.py
 """
 import math, re, sys
@@ -94,13 +94,6 @@ def edge_keepouts(b, width=EDGE_STRIP, tile=10.0):
 
 def patch_dsn(text, b):
     text = re.sub(r'\(clearance (\d+(?:\.\d+)?)\)', lambda m: f'(clearance {float(m.group(1)) + BUMP_UM:g})', text)
-    # GND is poured after routing instead
-    k0 = text.index('(network')
-    m = re.search(r'\(net %s\s' % re.escape(POUR_NET), text[k0:])
-    if m:
-        k = k0 + m.start()
-        text = text[:k] + text[scope_end(text, k) + 1:]
-    text = re.sub(r'\(class [^()]*', lambda m: re.sub(r'(?<=\s)%s(?=\s)' % re.escape(POUR_NET), '', m.group(0)), text)
     keepouts = ''.join(
         f'    (keepout "" (polygon {ly} 0  ' + '  '.join(f'{x:.1f} {y:.1f}' for x, y in p) + '))\n'
         for p in edge_keepouts(b) for ly in ('F.Cu', 'B.Cu'))
@@ -150,7 +143,8 @@ def stitch(b, net, zf, zb, pitch=10.0, step=0.5, via_d=0.6, drill=0.3, margin=0.
            avoid_refs=('MCU1',)):
     """GND vias wherever both pours are, on a coarse grid, plus one in every F.Cu piece left over.
 
-    All the GND pads are on the back, so without these the front pour floats.
+    All the GND pads are on the back, so without these the front pour floats. The router's own GND
+    vias count: new ones keep min_gap from them.
     """
     region = zf.GetFilledPolysList(pcbnew.F_Cu).CloneDropTriangulation()
     region.BooleanIntersection(zb.GetFilledPolysList(pcbnew.B_Cu))
@@ -170,8 +164,10 @@ def stitch(b, net, zf, zb, pitch=10.0, step=0.5, via_d=0.6, drill=0.3, margin=0.
             for i in range(int((x1 - x0) / step) + 1)
             for j in range(int((y1 - y0) / step) + 1)]
     cand = [p for p in cand if region.Contains(pt(p), -1, 0, True)]
+    taken = [(TO_MM(v.GetPosition().x), TO_MM(v.GetPosition().y)) for v in b.GetTracks()
+             if v.Type() == pcbnew.PCB_VIA_T and v.GetNetCode() == net.GetNetCode()]
     chosen = []
-    free = lambda p: all((p[0] - q[0]) ** 2 + (p[1] - q[1]) ** 2 >= min_gap ** 2 for q in chosen)
+    free = lambda p, gap=min_gap: all((p[0] - q[0]) ** 2 + (p[1] - q[1]) ** 2 >= gap ** 2 for q in taken + chosen)
     cells = {}
     for p in cand:
         cells.setdefault((math.floor((p[0] - x0) / pitch), math.floor((p[1] - y0) / pitch)), []).append(p)
@@ -184,8 +180,8 @@ def stitch(b, net, zf, zb, pitch=10.0, step=0.5, via_d=0.6, drill=0.3, margin=0.
     front = zf.GetFilledPolysList(pcbnew.F_Cu)
     front.BuildBBoxCaches()
     for k in range(front.OutlineCount()):
-        inside = [p for p in cand if front.Contains(pt(p), k, 0, True)]
-        if inside and not any(front.Contains(pt(p), k, 0, True) for p in chosen):
+        inside = [p for p in cand if front.Contains(pt(p), k, 0, True) and free(p, via_d + 0.3)]
+        if inside and not any(front.Contains(pt(p), k, MM(via_d / 2), True) for p in taken + chosen):
             mx, my = sum(p[0] for p in inside) / len(inside), sum(p[1] for p in inside) / len(inside)
             chosen.append(min(inside, key=lambda p: (p[0] - mx) ** 2 + (p[1] - my) ** 2))
     for p in chosen:
@@ -199,10 +195,24 @@ def stitch(b, net, zf, zb, pitch=10.0, step=0.5, via_d=0.6, drill=0.3, margin=0.
     return len(chosen)
 
 
+def widen_necks(b):
+    """Where a full-width track doesn't fit, Freerouting narrows it to as little as half its width,
+    below the rules' minimum. Bring those necks up to the minimum; the DRC afterwards checks that
+    they still clear everything."""
+    min_width = b.GetDesignSettings().m_TrackMinWidth
+    necks = [t for t in b.GetTracks() if t.Type() == pcbnew.PCB_TRACE_T and t.GetWidth() < min_width]
+    for t in necks:
+        t.SetWidth(min_width)
+    return len(necks)
+
+
 def import_ses(pcb, path):
     b = pcbnew.LoadBoard(pcb)
     strip_board(b)
     assert pcbnew.ImportSpecctraSES(b, path), 'SES import failed'
+    n = widen_necks(b)
+    if n:
+        print(f'{n} tracks widened to {TO_MM(b.GetDesignSettings().m_TrackMinWidth):g} mm')
     net = b.FindNet(POUR_NET)
     zf, zb = add_pours(b, net)
     fill(b)
