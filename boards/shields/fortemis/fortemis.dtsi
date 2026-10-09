@@ -36,37 +36,37 @@
               , <&key_physical_attrs 97 92  236   0       0  285  46>  //  2 left top middle
               , <&key_physical_attrs 97 92  336  30       0  385  76>  //  3 left top index
               , <&key_physical_attrs 97 92  436  44       0  485  90>  //  4 left top inner
-              , <&key_physical_attrs 97 92  936  44       0  985  90>  //  5 right top inner
-              , <&key_physical_attrs 97 92 1036  30       0 1085  76>  //  6 right top index
-              , <&key_physical_attrs 97 92 1136   0       0 1185  46>  //  7 right top middle
-              , <&key_physical_attrs 97 92 1252  45     400 1300  91>  //  8 right top ring
-              , <&key_physical_attrs 97 92 1365 122    1000 1414 168>  //  9 right top pinky
+              , <&key_physical_attrs 97 92 1103  44       0 1151  90>  //  5 right top inner
+              , <&key_physical_attrs 97 92 1203  30       0 1251  76>  //  6 right top index
+              , <&key_physical_attrs 97 92 1303   0       0 1351  46>  //  7 right top middle
+              , <&key_physical_attrs 97 92 1418  45     400 1467  91>  //  8 right top ring
+              , <&key_physical_attrs 97 92 1532 122    1000 1580 168>  //  9 right top pinky
               , <&key_physical_attrs 97 92   24 215 (-1000)   72 261>  // 10 left home pinky
               , <&key_physical_attrs 97 92  128 139  (-400)  176 185>  // 11 left home ring
               , <&key_physical_attrs 97 92  236  94       0  285 140>  // 12 left home middle
               , <&key_physical_attrs 97 92  336 125       0  385 171>  // 13 left home index
               , <&key_physical_attrs 97 92  436 139       0  485 185>  // 14 left home inner
-              , <&key_physical_attrs 97 92  936 139       0  985 185>  // 15 right home inner
-              , <&key_physical_attrs 97 92 1036 125       0 1085 171>  // 16 right home index
-              , <&key_physical_attrs 97 92 1136  94       0 1185 140>  // 17 right home middle
-              , <&key_physical_attrs 97 92 1245 139     400 1293 185>  // 18 right home ring
-              , <&key_physical_attrs 97 92 1349 215    1000 1397 261>  // 19 right home pinky
+              , <&key_physical_attrs 97 92 1103 139       0 1151 185>  // 15 right home inner
+              , <&key_physical_attrs 97 92 1203 125       0 1251 171>  // 16 right home index
+              , <&key_physical_attrs 97 92 1303  94       0 1351 140>  // 17 right home middle
+              , <&key_physical_attrs 97 92 1412 139     400 1460 185>  // 18 right home ring
+              , <&key_physical_attrs 97 92 1515 215    1000 1564 261>  // 19 right home pinky
               , <&key_physical_attrs 97 92   40 308 (-1000)   89 354>  // 20 left bottom pinky
               , <&key_physical_attrs 97 92  134 233  (-400)  183 279>  // 21 left bottom ring
               , <&key_physical_attrs 97 92  236 189       0  285 235>  // 22 left bottom middle
               , <&key_physical_attrs 97 92  336 219       0  385 265>  // 23 left bottom index
               , <&key_physical_attrs 97 92  436 233       0  485 279>  // 24 left bottom inner
-              , <&key_physical_attrs 97 92  936 233       0  985 279>  // 25 right bottom inner
-              , <&key_physical_attrs 97 92 1036 219       0 1085 265>  // 26 right bottom index
-              , <&key_physical_attrs 97 92 1136 189       0 1185 235>  // 27 right bottom middle
-              , <&key_physical_attrs 97 92 1238 233     400 1287 279>  // 28 right bottom ring
-              , <&key_physical_attrs 97 92 1332 308    1000 1381 354>  // 29 right bottom pinky
-              , <&key_physical_attrs 97 92  352 331    2500  400 377>  // 30 left tuck thumb
-              , <&key_physical_attrs 97 92  452 353    2500  500 399>  // 31 left near thumb
-              , <&key_physical_attrs 97 92  533 416    2500  581 462>  // 32 left far thumb
-              , <&key_physical_attrs 97 92  840 416 (-2500)  888 462>  // 33 right far thumb
-              , <&key_physical_attrs 97 92  921 353 (-2500)  969 399>  // 34 right near thumb
-              , <&key_physical_attrs 97 92 1021 331 (-2500) 1070 377>  // 35 right tuck thumb
+              , <&key_physical_attrs 97 92 1103 233       0 1151 279>  // 25 right bottom inner
+              , <&key_physical_attrs 97 92 1203 219       0 1251 265>  // 26 right bottom index
+              , <&key_physical_attrs 97 92 1303 189       0 1351 235>  // 27 right bottom middle
+              , <&key_physical_attrs 97 92 1405 233     400 1454 279>  // 28 right bottom ring
+              , <&key_physical_attrs 97 92 1499 308    1000 1548 354>  // 29 right bottom pinky
+              , <&key_physical_attrs 97 92  482 369    2616  530 415>  // 30 left tuck thumb
+              , <&key_physical_attrs 97 92  574 431    4116  623 477>  // 31 left near thumb
+              , <&key_physical_attrs 97 92  648 515    5616  697 561>  // 32 left far thumb
+              , <&key_physical_attrs 97 92  891 515 (-5616)  939 561>  // 33 right far thumb
+              , <&key_physical_attrs 97 92  965 431 (-4116) 1013 477>  // 34 right near thumb
+              , <&key_physical_attrs 97 92 1058 369 (-2616) 1106 415>  // 35 right tuck thumb
               ;
         // end: generated
     };
