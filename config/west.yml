@@ -1,0 +1,23 @@
+manifest:
+  remotes:
+    - name: zmkfirmware
+      url-base: https://github.com/zmkfirmware
+    - name: caksoylar
+      url-base: https://github.com/caksoylar
+    - name: englmaxi
+      url-base: https://github.com/englmaxi
+  projects:
+    - name: zmk
+      remote: zmkfirmware
+      revision: v0.3.0
+      import: app/west.yml
+    # Drives the XIAO's RGB LED, which the case's light pipe shows (battery and connection status).
+    - name: zmk-rgbled-widget
+      remote: caksoylar
+      revision: v0.3.0
+    # Status screen for the PandaKB dongle's OLED (dongle mode only), on the ZMK v0.3 line.
+    - name: zmk-dongle-display
+      remote: englmaxi
+      revision: v0.3
+  self:
+    path: config

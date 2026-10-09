@@ -1,0 +1,30 @@
+# Firmware images built by GitHub Actions (.github/workflows/build.yml).
+---
+include:
+  # ---- Standalone mode: the left half is the central ------------------------
+  - board: seeeduino_xiao_ble
+    shield: fortemis_left rgbled_adapter
+    snippet: studio-rpc-usb-uart
+  # The right half is a peripheral in BOTH modes, so this one build serves
+  # standalone and dongle mode alike.
+  - board: seeeduino_xiao_ble
+    shield: fortemis_right rgbled_adapter
+  - board: seeeduino_xiao_ble
+    shield: settings_reset
+
+  # ---- Dongle mode: the PandaKB USB dongle is the central -------------------
+  - board: nice_nano_v2
+    shield: fortemis_dongle pandakb_dongle dongle_display
+    snippet: studio-rpc-usb-uart
+    cmake-args: -DCONFIG_ZMK_STUDIO=y
+    artifact-name: fortemis_dongle
+  # Same left half, rebuilt as a plain peripheral of the dongle.
+  - board: seeeduino_xiao_ble
+    shield: fortemis_left rgbled_adapter
+    cmake-args: -DCONFIG_ZMK_SPLIT=y -DCONFIG_ZMK_SPLIT_ROLE_CENTRAL=n
+    artifact-name: fortemis_left_dongle_mode
+  # The dongle is a nice!nano, a different board from the halves' XIAO, so it
+  # needs its own settings reset image.
+  - board: nice_nano_v2
+    shield: settings_reset
+    artifact-name: settings_reset_dongle
