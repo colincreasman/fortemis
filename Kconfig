@@ -1,0 +1,3 @@
+config ZMK_BEHAVIOR_LONG_PRESS
+    bool "Long-press behavior"
+    default y
