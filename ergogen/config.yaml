@@ -1,0 +1,330 @@
+# Fortemis: Ferris Sweep stagger + TOTEM splay + Forager thumbs. Ergogen 4.2.1.
+# Rebuild: npx --yes ergogen@4.2.1 ergogen -o ergogen/output   (from repo root)
+# Paste into https://ergogen.ceoloide.com to edit it visually.
+meta:
+  engine: 4.2.1
+  name: fortemis
+  version: 0.3.0
+  author: colincreasman
+
+units:
+  kx: 18            # Choc spacing (requirement L5)
+  ky: 17
+  # Column stagger along each column's axis, solved by tools/check_layout.py so the home keys land
+  # where the Ferris Sweep's do, with ring/pinky 15% steeper (decision D1).
+  ring_stagger: 7.3170
+  pinky_stagger: 11.4360
+  index_drop: 5.5   # Sweep: index 5.5 mm below middle
+  inner_drop: 2.5   # Sweep: inner 8 mm below middle = 2.5 below index
+  # TOTEM splay pivots, relative to the bottom key of the column being rotated (decision D2)
+  ring_pivot_y: -10.2303
+  middle_pivot_y: -13.1231
+  # Board edge and case (Forager): PCB edge 2.25 mm outside the key grid, case wall 1.3 mm outside that
+  edge: 2.25
+  case_ext: 1.3
+  # XIAO nRF52840 Plus centre, in the pinky-top key's frame. The Forager uses (-0.5, 12); ours sits
+  # 4.8 mm higher so its pads clear the pinky-top switch's Choc v2 centre hole and corner leg.
+  xiao_x: -0.5
+  xiao_y: 16.8
+  xiao_l: 20.96     # module size: USB-C to antenna
+  xiao_w: 17.78     # castellated edge to castellated edge
+  # Extra board margin along the castellated edges: the pads reach 1.5 mm past the module, so the
+  # plain `edge` margin leaves them 0.75 mm from the PCB edge. A 0.2 mm trace between them and the
+  # 0.3 mm copper-to-edge limit would have only 0.05 mm to spare. 0.5 mm more leaves 1.25 mm.
+  xiao_margin: 0.5
+  usb_inset: 0.25   # USB-C end of the module inside the PCB edge (Forager)
+  # Power switch tab: tab_w wide, from the case's outer surface tab_d into the board
+  tab_w: 12
+  tab_d: 3.35
+  nut_box: 3.5      # 6.2 mm nut pad - 2 * (edge - 0.9)
+  bat_l: 31         # area kept for the 301230 LiPo (30 x 12 x 3 mm cell plus tolerance)
+  bat_w: 12.5
+
+points:
+  zones:
+    matrix:
+      anchor:
+        rotate: 10                # pinky column angle (TOTEM)
+      key:
+        spread: kx
+        padding: ky
+        width: kx
+        height: ky
+      columns:
+        # pins: XIAO pin wired to each key (left half; mirror.pin = right half). Diodeless: each
+        # key goes straight from its pin to GND (decision D5).
+        pinky:
+          rows:
+            bottom: {pin: D9, mirror.pin: D14}
+            home: {pin: D19, mirror.pin: D3}
+            top: {pin: D10, mirror.pin: D13}
+        ring:
+          key:
+            stagger: pinky_stagger    # ring sits this far above pinky
+            splay: -6                 # 10 -> 4 deg
+            origin: [-kx/2, ring_pivot_y]
+          rows:
+            bottom: {pin: D18, mirror.pin: D4}
+            home: {pin: D8, mirror.pin: D5}
+            top: {pin: D17, mirror.pin: D6}
+        middle:
+          key:
+            stagger: ring_stagger
+            splay: -4                 # 4 -> 0 deg
+            origin: [-kx/2, middle_pivot_y]
+          rows:
+            bottom: {pin: D5, mirror.pin: D8}
+            home: {pin: D6, mirror.pin: D17}
+            top: {pin: D7, mirror.pin: D7}
+        index:
+          key.stagger: -index_drop
+          rows:
+            bottom: {pin: D3, mirror.pin: D19}
+            home: {pin: D14, mirror.pin: D9}
+            # right: D15, not D18. The right XIAO's D18 pad sits in the row along the board edge,
+            # boxed in by D8 and D9, and Freerouting can't get a trace out of it.
+            top: {pin: D4, mirror.pin: D15}
+        inner:
+          key.stagger: -inner_drop
+          rows:
+            bottom: {pin: D12, mirror.pin: D12}
+            home: {pin: D2, mirror.pin: D2}
+            top: {pin: D13, mirror.pin: D10}
+      rows:
+        bottom:
+        home:
+        top:
+    thumbs:
+      # Forager: near thumb = inner bottom key + (2.749, -21.6), thumbs rotated 25 deg clockwise,
+      # far thumb = 18 mm along and 4 mm down in the rotated frame (decision D3).
+      # Bonus 3rd "tuck" thumb mirrors the far one on the inner side (decision D7); the zone starts
+      # there, so the anchor steps back 18 mm along and 4 mm down from the near thumb.
+      anchor:
+        - ref: matrix_inner_bottom
+          shift: [2.749, -21.6]
+          rotate: -25
+        - shift: [-kx, -4]
+      key:
+        width: kx
+        height: ky
+        spread: kx
+      columns:
+        tuck:
+          key: {pin: D1, mirror.pin: D1}
+        near:
+          key: {stagger: 4, pin: D11, mirror.pin: D11}
+        far:
+          key: {stagger: -4, pin: D0, mirror.pin: D0}
+      rows:
+        thumb:
+    mcu:
+      # XIAO nRF52840 Plus, face down on the back above the pinky column (Forager, decision D4).
+      # width/height only shape the board outline: the hull box is shortened so the USB-C end
+      # lands usb_inset inside the PCB edge.
+      anchor:
+        ref: matrix_pinky_top
+        shift: [xiao_x, xiao_y]
+      key:
+        width: xiao_l - 2 * (edge - usb_inset)
+        height: xiao_w + 2 * xiao_margin
+      columns:
+        xiao:
+      rows:
+        module:
+    power:
+      # MSK12C02 slide switch under a PCB tab that reaches through the base wall (decision D6).
+      # The point sits on the switch's front face, 0.35 mm inside the case's outer surface, and
+      # points out of the board. 2.5 mm below the pinky home key's centre it clears that key's
+      # hot-swap socket on the right half too (sockets are not mirrored there).
+      anchor:
+        ref: matrix_pinky_home
+        shift: [-(kx / 2 + edge + case_ext) + 0.35, -2.5]
+        rotate: 90
+      key:
+        width: tab_w
+        height: tab_d
+      columns:
+        switch:
+      rows:
+        tab:
+    # M2 SMD nuts for the case screws, placed like the Forager's relative to the nearest keys.
+    # Their width/height (nut_box) make the board outline keep >= 0.9 mm around the 6.2 mm pad.
+    nut_tl:
+      anchor: {ref: matrix_ring_top, shift: [-4.25, 11.75]}
+      key: {width: nut_box, height: nut_box}
+    nut_tr:
+      anchor: {ref: matrix_inner_top, shift: [13.08, 11.75]}
+      key: {width: nut_box, height: nut_box}
+    nut_br:
+      anchor: {ref: matrix_inner_bottom, shift: [13.08, -12.75]}
+      key: {width: nut_box, height: nut_box}
+    nut_bl:
+      # Forager: right of the pinky bottom key. As far left and up as the top plate allows (1.3 mm
+      # between the countersink and the pinky key's cutout), to leave room for the battery.
+      anchor: {ref: matrix_pinky_bottom, shift: [11.5, -2.5]}
+      key: {width: nut_box, height: nut_box}
+    nut_thumb:
+      # Forager: (7.25, -6.75); moved 1.25 mm out and 1.05 mm down to clear the far thumb's
+      # Choc v2 corner leg on the right half
+      anchor: {ref: thumbs_far_thumb, shift: [8.5, -7.8]}
+      key: {width: nut_box, height: nut_box}
+    battery:
+      # 301230 LiPo on the case floor under the lower halves of the ring and middle bottom keys,
+      # where the Forager puts its cell (under its middle and index bottom keys). width x height
+      # is the area kept for it: the 30 x 12 cell plus tolerance. Placed by a search that keeps it
+      # 0.95 mm or more from every switch post, hot-swap socket and screw boss on both halves.
+      anchor: {ref: matrix_middle_bottom, shift: [-3.3, -20.85], rotate: 5}
+      key: {width: bat_l, height: bat_w}
+  # Right half = mirror image, 90 mm between the inner top keys (two separate PCBs).
+  mirror:
+    ref: matrix_inner_top
+    distance: 90
+
+outlines:
+  # Board outline, Forager style: keys (18 x 17), controller and nuts hulled with an `edge` margin,
+  # r2.25 outside corners and r3.75 inside corners (grow by 6, shrink by 3.75), plus the
+  # power-switch tab. Hulls don't mirror, so each half lists its own points.
+  _main_l:
+    - what: hull
+      concavity: 1000
+      points: [matrix_pinky_bottom, matrix_pinky_home, matrix_pinky_top, mcu_xiao_module,
+               matrix_ring_top, nut_tl, matrix_middle_top, matrix_index_top, matrix_inner_top, nut_tr,
+               matrix_inner_home, matrix_inner_bottom, nut_br, matrix_index_bottom,
+               matrix_middle_bottom, matrix_ring_bottom, nut_bl]
+  _thumbs_l:
+    - what: hull
+      concavity: 1000
+      points: [thumbs_tuck_thumb, thumbs_near_thumb, thumbs_far_thumb, nut_thumb]
+  _core_l:
+    - what: outline
+      name: _main_l
+    - what: outline
+      name: _thumbs_l
+      expand: edge + 3.75
+  board_l:
+    - what: outline
+      name: _core_l
+      expand: -3.75
+    - what: rectangle
+      where: power_switch_tab
+      size: [tab_w, tab_d]
+      corner: 1
+      adjust: {shift: [0, 0.35 - tab_d / 2]}
+  _main_r:
+    - what: hull
+      concavity: 1000
+      points: [mirror_matrix_pinky_bottom, mirror_matrix_pinky_home, mirror_matrix_pinky_top,
+               mirror_mcu_xiao_module, mirror_matrix_ring_top, mirror_nut_tl, mirror_matrix_middle_top,
+               mirror_matrix_index_top, mirror_matrix_inner_top, mirror_nut_tr, mirror_matrix_inner_home,
+               mirror_matrix_inner_bottom, mirror_nut_br, mirror_matrix_index_bottom,
+               mirror_matrix_middle_bottom, mirror_matrix_ring_bottom, mirror_nut_bl]
+  _thumbs_r:
+    - what: hull
+      concavity: 1000
+      points: [mirror_thumbs_tuck_thumb, mirror_thumbs_near_thumb, mirror_thumbs_far_thumb,
+               mirror_nut_thumb]
+  _core_r:
+    - what: outline
+      name: _main_r
+    - what: outline
+      name: _thumbs_r
+      expand: edge + 3.75
+  board_r:
+    - what: outline
+      name: _core_r
+      expand: -3.75
+    - what: rectangle
+      where: mirror_power_switch_tab
+      size: [tab_w, tab_d]
+      corner: 1
+      adjust: {shift: [0, 0.35 - tab_d / 2]}
+  # Keycaps (Choc, 17.5 x 16.5) for previews
+  caps:
+    - what: rectangle
+      where: [/^matrix_/, /^thumbs_/, /^mirror_matrix_/, /^mirror_thumbs_/]
+      size: [17.5, 16.5]
+  preview:
+    - board_l
+    - board_r
+    - caps
+
+pcbs:
+  fortemis_left:
+    template: kicad8
+    outlines:
+      edge:
+        outline: board_l
+        layer: Edge.Cuts
+    footprints: &footprints
+      keys:
+        what: ceoloide/switch_choc_v1_v2
+        where: ['/^matrix_(?!pinky_top)/', '/^thumbs_/']
+        params: &key_params
+          side: B
+          hotswap: true
+          include_keycap: true
+          keycap_width: 17.5
+          keycap_height: 16.5
+          from: '{{pin}}'
+          to: GND
+      # the pinky top key's socket is turned to the bottom, clear of the XIAO (as on the Forager)
+      key_under_xiao:
+        what: ceoloide/switch_choc_v1_v2
+        where: matrix_pinky_top
+        adjust: {rotate: 180}
+        params: *key_params
+      mcu:
+        what: fortemis/mcu_xiao_nrf52840_plus
+        where: mcu_xiao_module
+      power:
+        what: fortemis/power_switch_msk12c02_side
+        where: power_switch_tab
+      nuts:
+        what: fortemis/nut_smd_m2
+        where: /^nut_/
+      battery:
+        what: fortemis/battery_lipo_pads
+        where: battery
+        params: &battery_params
+          length: bat_l
+          width: bat_w
+          # wire pads below the bottom-left nut, clear of both halves' sockets and posts
+          pos_x: -20.2
+          pos_y: 4.2
+          neg_x: -16.8
+          neg_y: 2.75
+  fortemis_right:
+    template: kicad8
+    outlines:
+      edge:
+        outline: board_r
+        layer: Edge.Cuts
+    footprints:
+      keys:
+        what: ceoloide/switch_choc_v1_v2
+        where: ['/^matrix_(?!pinky_top)/', '/^thumbs_/']
+        asym: clone
+        params: *key_params
+      key_under_xiao:
+        what: ceoloide/switch_choc_v1_v2
+        where: matrix_pinky_top
+        asym: clone
+        adjust: {rotate: 180}
+        params: *key_params
+      mcu:
+        what: fortemis/mcu_xiao_nrf52840_plus
+        where: mcu_xiao_module
+        asym: clone
+      power:
+        what: fortemis/power_switch_msk12c02_side
+        where: power_switch_tab
+        asym: clone
+      nuts:
+        what: fortemis/nut_smd_m2
+        where: /^nut_/
+        asym: clone
+      battery:
+        what: fortemis/battery_lipo_pads
+        where: battery
+        asym: clone
+        params: *battery_params
