@@ -70,6 +70,7 @@ behind that, are in [design-log.md](design-log.md).
 | C1 | The case and everything else follow the **Forager**: a fully enclosed two-piece case, a top plate that holds the switches, reset access through a tab in the bottom case, the same size class, sturdy and light. | MUST (top priority) |
 | C2 | No loose wires visible from outside. Everything sits inside the case, as on the Forager. | MUST |
 | C3 | If the PCB makes any Forager feature impossible, **stop and tell the owner** so they can decide. | MUST (process) |
+| C4 | (Added 2026-10-13.) Also offer a **sandwich case** with the **Totemist's** side profile: the case rim comes up level with the keycap tops (the keys sit in wells, with the switch plate at the bottom), where most cases have a flat plate with the switches and keycaps standing on it. It sits on top of C1–C3: everything else stays as on the Forager-style case. Both cases stay available side by side, each in its own folder under `case/`. | MUST |
 
 ## 6. How ambiguous points were read
 
@@ -92,6 +93,11 @@ it is easy to change.
 5. **"1–2 cm farther out along the same arc"** (L3) means the thumb keys stay on the circle the
    Totemist's thumb keys sit on, 15° apart as on the Totemist, and each moves the same distance
    along it, away from the main keys. Fortemis uses 15 mm, the middle of the range.
+6. **"Level with the keycap tops"** (C4) means the Totemist's rim height. The Totemist is closed
+   source, so the height comes from the TOTEM it's derived from: the rim is 9.05 mm above the PCB, and
+   MBK keycap tops stand 1.45 mm above it, as in the owner's photos of the Totemist. The rim height
+   is one setting (`--rim 10.5` makes it exactly level with MBK tops). The Totemist's thumb keys sit
+   on a low shelf with no wall in front, and so do Fortemis's.
 
 ## 7. Acceptance criteria
 
@@ -105,4 +111,7 @@ it is easy to change.
 - Case: two-piece enclosed STL per half (top plate and base), built to the Forager's dimensions
   (8.4 mm stack, 2.2 mm top plate, 6.2 mm base). It includes the USB-C opening, reset lever, LED
   light pipe, power-switch opening and screw bosses, with no wires showing.
+- Sandwich case (C4): the same base, plate cuts and screws as the enclosed case, plus a rim at the
+  TOTEM's height around wells with 1.0 mm keycap clearance. It passes the same component checks, and
+  keycaps clear it over their full travel.
 - Docs: parts list with links, build guide, and firmware (ZMK shield) for the chosen controller.

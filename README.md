@@ -15,7 +15,9 @@ has been built yet, so nothing has been tried on hardware.
 - `ergogen/`: the Ergogen layout config, footprints and build tools
 - `pcb/`: KiCad 10 projects for both halves (routed); `pcb/fab/`: Gerber zips to order, and BOM and
   placement files for PCB assembly
-- `case/`: STL files to print, a top plate and a base for each half
+- `case/`: STL files to print, a top and a base for each half, in two styles: the Forager-style
+  [enclosed case](case/enclosed/README.md) and the Totemist-style [sandwich case](case/sandwich/README.md),
+  whose rim comes up to the keycap tops ([compare them](case/README.md))
 
 Rebuild the PCBs from `ergogen/config.yaml` (needs node, KiCad 10 and Java 25+):
 
@@ -26,10 +28,11 @@ python3 ergogen/tools/pcb.py drc     # DRC summary only
 python3 ergogen/tools/pcb.py fab     # Gerbers + drill -> pcb/fab/*.zip, BOM + placement CSVs
 ```
 
-Rebuild the case from the PCBs (needs KiCad 10 and `pip install -r ergogen/tools/requirements.txt`):
+Rebuild the cases from the PCBs (needs KiCad 10 and `pip install -r ergogen/tools/requirements.txt`):
 
 ```sh
-python3 ergogen/tools/case.py        # case/*.stl and docs/img/case.png
+python3 ergogen/tools/case.py            # enclosed case: case/enclosed/*.stl and docs/img/case.png
+python3 ergogen/tools/case_sandwich.py   # sandwich case: case/sandwich/*
 ```
 
 ![Fortemis case](docs/img/case.png)

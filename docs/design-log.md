@@ -14,7 +14,7 @@ and progress. Newest entries are at the bottom. Requirement IDs (L1, E4, C1, …
 | Power switch part | Chosen: MSK12C02 (TOTEM's part) on a PCB tab through the base wall (D6) |
 | Ergogen layout (`ergogen/config.yaml`) | Done (v0.4.0): 36 keys, thumbs on the Totemist's thumb arc 15 mm farther out (D3, revised 2026-10-09), board outline, controller, power-switch tab, screw nuts and battery placed |
 | PCB routing, DRC, fabrication files | Done (v0.4.0): both halves routed, KiCad DRC 0 errors / 0 warnings / 0 unconnected. Gerbers, and BOM and placement files for JLCPCB assembly, in `pcb/fab/` |
-| Case STLs | Done (v0.4.0): `case/` has a top plate and a base for each half, checked against models of the components (`ergogen/tools/case.py`) |
+| Case STLs | Done (v0.4.0): two styles, side by side in `case/`. The Forager-style enclosed case (`case/enclosed/`, `ergogen/tools/case.py`) and, since 2026-10-13, the Totemist-style sandwich case (`case/sandwich/`, `ergogen/tools/case_sandwich.py`, C4). Both are checked against models of the components |
 | ZMK firmware | Done: shield and config in this repository (ZMK v0.3.0), standalone and PandaKB dongle modes, ZMK Studio. All six images build and every key traces to the right PCB switch; not yet tried on hardware. |
 | Build guide and parts list | Done: [build-guide.md](build-guide.md), with links for every part |
 
@@ -647,4 +647,51 @@ Checks, after rebuilding the PCBs, fabrication files, case and firmware from the
 | `case.py`'s checks against the component models | ✅ Pass, with the same closest gaps as before. Top screws at every nut except the thumb nut, as before. |
 | `zmk.py --check` | ✅ The pin lists are unchanged. Only ZMK Studio's key layout changed: the thumbs moved, and the right half is drawn farther right. |
 | All six firmware images build | ✅ |
+| On real hardware | Not yet: no boards have been built |
+
+## 2026-10-13: Sandwich case (C4, `ergogen/tools/case_sandwich.py`)
+
+The owner asked for a second case with the Totemist's side profile: the case rim comes up level
+with the keycap tops, on top of everything the Forager-style case already has (C4). Both cases now
+sit side by side under `case/`, each in its own folder with a README, like the TOTEM repo's case
+variants:
+
+- `case/enclosed/`: the existing STLs, moved there. `case.py` now writes there, and its output is
+  byte-for-byte unchanged.
+- `case/sandwich/`: the new case.
+- `case/README.md`: compares the two.
+
+**Reference.** The Totemist is closed source. ErgoMech's listing says it is "only 17mm from the
+bottom of the case to the top of the keycaps", with an aluminium top that includes the switch
+plates. It is derived from GEIST's open-source TOTEM, whose case has the same profile. GEIST wrote
+that he wanted "the case [...] at level with the keycaps (or at least almost)". So the numbers come
+from the TOTEM and the parts:
+
+| Source | Measured |
+|---|---|
+| TOTEM case v0.8, BLE top (STEP, meshed) | Plate top 2.2 mm above the PCB, 1.2 mm thick at the cut-outs. Rim 9.05 mm above the PCB. 1.0 mm from each keycap edge to the wall. A 1.5 mm roof over a hollow rim that is open toward the PCB. The thumb keys sit on a plate-level shelf |
+| Kailh PG1350 model (TOTEM repo) | Above the PCB: flange 2.2–3.0 mm, top housing 5.0 mm, stem top 8.0 mm. 3.0 mm travel |
+| MBK keycap (FKcaps profile data, idank/keyboards STL) | 17.5 × 16.5 × 3.98 mm. Its top is 10.5 mm above the PCB on a Choc v1 |
+| Owner's photos of their Totemist | MBK caps stand just above the rim. The thumb keys sit on a low shelf. Both match the TOTEM |
+
+**Decisions**
+
+| Decision | Why |
+|---|---|
+| Rim 9.05 mm above the PCB, 6.85 mm above the plate | TOTEM's height, and so the Totemist's. MBK tops stand 1.45 mm above it. `--rim 10.5` makes it exactly level with them |
+| The plate and base don't change. `case_sandwich.py` cuts the plate with `case.py`'s own switch cuts, countersinks and solder pockets, and uses `case.py`'s base | C4 sits on top of C1–C3 |
+| Wells 1.0 mm around each keycap. Any part of the rim narrower than 2 mm joins the wells | TOTEM's clearance, without fragile slivers between staggered or splayed columns |
+| Thumb shelf: no rim in front of the thumb keys | As on the Totemist and TOTEM, so the wall can't catch the thumbs |
+| The top screws sit at the bottom of 4.8 mm holes in the rim, on their old seats | Keeps the M2×4 screws. Heads flush with the rim would need about 11 mm screws, which aren't a stock length, and would collide with the bottom screws in each 2 mm nut |
+| A hollow rim, with ribs every 12 mm that rest on the PCB | Light, solid under a finger, FDM bridges of at most 10.4 mm, and no closed cavities |
+| The shell geometry is in `sandwich.py`, the same file in the Sweep and Forager repos | One implementation for all three boards |
+
+**Checks**, both halves:
+
+| Check | Result |
+|---|---|
+| `case.py`'s checks against the component models | ✅ Pass, with the same closest gaps as the enclosed top (switch housings 0.05 mm, everything under the PCB 1.6 mm or more) |
+| Choc v1 switch bodies; MBK keycaps over their full travel | ✅ No overlap. Keycaps keep 1.0 mm from the walls |
+| One piece, no closed pockets, STL watertight after reload | ✅ |
+| Size | ✅ Top 147.9 × 122.1 × 9.05 mm, 23.7 cm³, on the same outline as the enclosed case |
 | On real hardware | Not yet: no boards have been built |
