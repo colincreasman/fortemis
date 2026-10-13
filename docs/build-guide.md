@@ -33,7 +33,7 @@ Counts are for the whole keyboard (both halves).
 
 | Part | Count | Where to buy | Notes |
 |---|---|---|---|
-| 3D-printed case parts | 4 | `case/` | A top plate and a base for each half ([printing](#printing-the-case)) |
+| 3D-printed case parts | 4 | `case/enclosed/` or `case/sandwich/` | A top and a base for each half, in either [style](../case/README.md) ([printing](#printing-the-case)) |
 | M2 countersunk (flat head) screws, **4 mm** long | 18 | [McMaster-Carr 91294A002](https://www.mcmaster.com/91294A002/) | 9 per half. Not 5 mm: a screw from the top and one from the bottom meet in each nut. |
 | Rubber bumpers | 8 or more | [McMaster-Carr 95495K18](https://www.mcmaster.com/95495K18/) | Anything that isn't too thick |
 | Clear 1.75 mm 3D-printer filament | 2 pieces, 6 mm long | | Light pipes for the XIAO's LED |
@@ -149,9 +149,14 @@ the switch is ON. The firmware doesn't deep-sleep: turn a half off with the swit
 
 ## Printing the case
 
-Print the four STL files in `case/` with an FDM printer, the way they're oriented: the base floor
-down and the top plate's top face up. No supports are needed: apart from the lowest 0.6 mm of the
-base's rounded bottom edge, nothing overhangs by more than 45° except a few short bridges.
+Pick a style ([compare them](../case/README.md)): the [enclosed case](../case/enclosed/README.md) in
+`case/enclosed/`, or the [sandwich case](../case/sandwich/README.md) in `case/sandwich/`, whose rim
+comes up to just under the keycap tops. Both use the same base.
+
+Print the four STL files of your style with an FDM printer, the way they're oriented: the base floor
+down and the top's plate down (the enclosed top's top face is then up). No supports are needed:
+apart from the lowest 0.6 mm of the base's rounded bottom edge, nothing overhangs by more than 45°
+except a few short bridges. The sandwich top's roof bridges at most 10.4 mm, between its ribs.
 
 The reset lever in each base's floor is printed in place. As the Forager's guide warns, too much
 first-layer squish can fuse it to the floor; adjust the z-offset if it is stuck.
@@ -162,7 +167,8 @@ first-layer squish can fuse it to the floor; adjust the z-offset if it is stuck.
    the USB-C end until it is flush with the outside. A small tool such as a hex key helps.
 2. Put the top plate on the front of the PCB. Press a few switches through the plate into the
    sockets near the corners to line it up, then fit the four top screws. There is no top screw at
-   the thumb nut.
+   the thumb nut. On the sandwich top, the top screws go down the four holes in the rim: use a hex
+   key at least 8 mm long.
 3. Turn the half over and lay the battery on its outline.
 4. Fit the base, USB-C end first so that the port slides into its slot. The power switch's lever
    comes out through the notch in the wall. Hold the plate and base together along the edges so
