@@ -1,0 +1,84 @@
+{
+ "rim_above_pcb": 9.05,
+ "mbk_top_above_pcb": 10.5,
+ "halves": {
+  "fortemis_left": {
+   "shell": {
+    "widest_roof_span_mm": 10.4,
+    "rim_area_mm2": 3442.5,
+    "shelf_area_mm2": 384.9,
+    "hollow_area_mm2": 1624.0,
+    "keycaps_past_outline_mm2": 0.0,
+    "rim_z": 10.65,
+    "plate_top_z": 3.8,
+    "shelf_z": 3.8,
+    "rim_above_pcb": 9.05,
+    "cap_top_above_rim_mbk": 1.45,
+    "trimmed_mm3": 69.08
+   },
+   "keycap_check": {
+    "part": "top",
+    "pieces": 1,
+    "genus": 37,
+    "status": "NoError",
+    "volume_cm3": 23.73,
+    "size_mm": [
+     147.9,
+     122.1,
+     9.05
+    ],
+    "clash_mm3": {
+     "switches": 0.0,
+     "keycaps, full travel": 0.0
+    },
+    "gap_mm": {
+     "switches": 0.0,
+     "keycaps, full travel": 1.0
+    },
+    "ok": true,
+    "closed_pockets": []
+   },
+   "top_screws": 4,
+   "nuts": 5
+  },
+  "fortemis_right": {
+   "shell": {
+    "widest_roof_span_mm": 10.4,
+    "rim_area_mm2": 3442.5,
+    "shelf_area_mm2": 384.9,
+    "hollow_area_mm2": 1615.7,
+    "keycaps_past_outline_mm2": 0.0,
+    "rim_z": 10.65,
+    "plate_top_z": 3.8,
+    "shelf_z": 3.8,
+    "rim_above_pcb": 9.05,
+    "cap_top_above_rim_mbk": 1.45,
+    "trimmed_mm3": 68.98
+   },
+   "keycap_check": {
+    "part": "top",
+    "pieces": 1,
+    "genus": 26,
+    "status": "NoError",
+    "volume_cm3": 23.79,
+    "size_mm": [
+     147.9,
+     122.1,
+     9.05
+    ],
+    "clash_mm3": {
+     "switches": 0.0,
+     "keycaps, full travel": 0.0
+    },
+    "gap_mm": {
+     "switches": 0.0,
+     "keycaps, full travel": 1.0
+    },
+    "ok": true,
+    "closed_pockets": []
+   },
+   "top_screws": 4,
+   "nuts": 5
+  }
+ }
+}
