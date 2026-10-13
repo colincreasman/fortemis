@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Generate the Fortemis case, a top plate and a base for each half, around the routed PCBs.
 
-  python3 ergogen/tools/case.py                  # both halves -> case/*.stl and docs/img/case.png
+  python3 ergogen/tools/case.py                  # both halves -> case/enclosed/*.stl and docs/img/case.png
   python3 ergogen/tools/case.py fortemis_left    # one half
 
 The board outline, switches, nuts, XIAO, power switch and battery come from pcb/<board>.kicad_pcb
@@ -25,7 +25,7 @@ from shapely.ops import unary_union
 sys.path.insert(0, str(pathlib.Path(__file__).parent))
 from pcb import BOARDS, KICAD_PY, PCB, ROOT  # noqa: E402
 
-OUT = ROOT / 'case'
+OUT = ROOT / 'case' / 'enclosed'
 IMG = ROOT / 'docs' / 'img' / 'case.png'
 CONFIG = ROOT / 'ergogen' / 'config.yaml'
 SEGS = 48                       # segments per circle
