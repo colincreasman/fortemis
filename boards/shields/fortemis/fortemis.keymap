@@ -138,25 +138,25 @@
 
     combos {
         compatible = "zmk,combos";
-        // Letter combos need both keys within 15ms (ZMK's default is 50ms), so
+        // Letter combos need both keys within 25ms (ZMK's default is 50ms), so
         // quick rolls while typing, like O then P, stay as plain letters.
         combo_esc_op {
-            timeout-ms = <15>;
+            timeout-ms = <25>;
             key-positions = <8 9>;  // Combo o+p for ESCAPE
             bindings = <&kp ESC>;
         };
         combo_esc_qw {
-            timeout-ms = <15>;
+            timeout-ms = <25>;
             key-positions = <0 1>;  // Combo q+w for ESCAPE
             bindings = <&kp ESC>;
         };
         combo_caps_word_left {
-            timeout-ms = <15>;
+            timeout-ms = <25>;
             key-positions = <20 21>;  // Combo Z+X for CAPS WORD (left)
             bindings = <&caps_word>;
         };
         combo_caps_word_right {
-            timeout-ms = <15>;
+            timeout-ms = <25>;
             key-positions = <28 29>;  // Combo .+/ for CAPS WORD (right)
             bindings = <&caps_word>;
         };
