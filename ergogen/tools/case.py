@@ -128,7 +128,7 @@ def union(solids):
 def smooth(poly, r):
     """Round every outside corner to at least r (opening). The outline's arcs come polygonised from
     KiCad and buffering adds tiny joins along them, which would fold over when loft() insets them."""
-    out = poly.buffer(-r, quad_segs=16).buffer(r, quad_segs=16).simplify(0.001)
+    out = poly.buffer(-r, quad_segs=16).buffer(r, quad_segs=16).simplify(0.005)
     assert out.geom_type == 'Polygon' and poly.hausdorff_distance(out) < 0.3
     return out
 
@@ -402,17 +402,9 @@ class Half:
 
 
 def write_stl(solid, path):
-    mesh = solid.to_mesh()
-    v = np.asarray(mesh.vert_properties)[:, :3].astype(np.float32)
-    tri = v[np.asarray(mesh.tri_verts)]
-    n = np.cross(tri[:, 1] - tri[:, 0], tri[:, 2] - tri[:, 0])
-    n /= np.maximum(np.linalg.norm(n, axis=1, keepdims=True), 1e-12)
-    rec = np.zeros(len(tri), dtype=[('n', '<f4', 3), ('v', '<f4', (3, 3)), ('attr', '<u2')])
-    rec['n'], rec['v'] = n, tri
-    with open(path, 'wb') as f:
-        f.write(f'Fortemis {path.stem}'.encode().ljust(80, b' '))
-        f.write(np.uint32(len(tri)).tobytes())
-        f.write(rec.tobytes())
+    from sandwich import write_stl as export_stl
+    if not export_stl(solid, path, header=f'Fortemis {path.stem}'):
+        raise ValueError(f'{path}: STL is not watertight after reload')
 
 
 def look(elev, azim):

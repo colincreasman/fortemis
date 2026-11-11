@@ -18,7 +18,7 @@ Everything from requirements C1–C3:
   power-switch notch. `fortemis_<half>_base.stl` here is the enclosed base.
 - **Screws and nuts:** the same 9 × M2×4 countersunk screws per half (4 top, 5 bottom) into the five
   SMD nuts. The top screws sit on the same seats, at the bottom of a 4.8 mm hole in the rim.
-- **Size:** the same 147.9 × 122.1 mm outline.
+- **Size:** the same 127.3 × 101.8 mm outline.
 
 ## What's new: the height
 
@@ -43,7 +43,7 @@ Also copied from the TOTEM and Totemist:
 - **Wells:** 1.0 mm between every keycap and the wall, a 0.5 mm chamfer on the rim's inside edges
   and a 1.5 mm round on its outside edge. Where columns are staggered or splayed, the wall steps with
   them.
-- **Thumb shelf:** in front of the three thumb keys there is no rim, just the plate, so the wall
+- **Thumb shelf:** in front of the two thumb keys there is no rim, just the plate, so the wall
   can't catch your thumbs.
 - **Hollow rim:** a 1.5 mm roof on walls and on ribs every 12 mm that rest on the PCB, open
   underneath. It's light, it feels as solid as a plate, and no bridge is wider than 10.4 mm, so it
@@ -53,8 +53,8 @@ Also copied from the TOTEM and Totemist:
 
 | File | What it is |
 |---|---|
-| `fortemis_left_top.stl`, `fortemis_right_top.stl` | Top shells: 147.9 × 122.1 × 9.05 mm, 23.7 cm³ each |
-| `fortemis_left_base.stl`, `fortemis_right_base.stl` | Bases: the enclosed case's, 147.9 × 122.1 × 6.2 mm |
+| `fortemis_left_top.stl`, `fortemis_right_top.stl` | Top shells: 127.3 × 101.8 × 9.05 mm, 21.5 cm³ each |
+| `fortemis_left_base.stl`, `fortemis_right_base.stl` | Bases: the enclosed case's, 127.3 × 101.8 × 6.2 mm |
 | `fortemis_sandwich_preview.png`, `fortemis_sandwich_profile.png` | Renders and side views |
 | `fortemis_sandwich_report.json` | Check results |
 

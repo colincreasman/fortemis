@@ -22,9 +22,8 @@
         , <&gpio1 13 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>  // 27 bottom middle  D8
         , <&gpio0  4 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>  // 28 bottom ring    D4
         , <&gpio0  9 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>  // 29 bottom pinky   D14
-        , <&gpio0  2 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>  // 33 far thumb      D0
-        , <&gpio0 15 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>  // 34 near thumb     D11
-        , <&gpio0  3 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>  // 35 tuck thumb     D1
+        , <&gpio0  2 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>  // 32 far thumb      D0
+        , <&gpio0 15 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>  // 33 near thumb     D11
         ;
     // end: generated
 };

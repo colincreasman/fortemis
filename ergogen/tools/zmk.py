@@ -33,7 +33,7 @@ UNIT = 18.0                # mm per key unit: the Choc column pitch
 CAP = (17.5, 16.5)         # Choc keycap, mm
 ROW_PITCH = 17.0
 COLUMNS = ['pinky', 'ring', 'middle', 'index', 'inner']
-THUMBS = ['tuck', 'near', 'far']
+THUMBS = ['near', 'far']
 ROWS = ['top', 'home', 'bottom']
 
 
@@ -61,7 +61,7 @@ def keymap_order(keys, right):
     """(key, name) in keymap order for one half."""
     thumbs = sorted([k for k in keys if abs(k['rot']) > 15], key=lambda k: k['xy'][0])
     main = sorted([k for k in keys if abs(k['rot']) <= 15], key=lambda k: k['xy'][0])
-    assert len(thumbs) == 3 and len(main) == 15, 'expected 15 main keys and 3 thumbs per half'
+    assert len(thumbs) == 2 and len(main) == 15, 'expected 15 main keys and 2 thumbs per half'
     cols = [sorted(main[i:i + 3], key=lambda k: k['xy'][1]) for i in range(0, 15, 3)]
     for c in cols:  # grouping check: a column is three keys at one angle, a row pitch apart
         assert len({k['rot'] for k in c}) == 1
@@ -128,7 +128,7 @@ def fill(path, body):
 def main():
     check = '--check' in sys.argv[1:]
     keys = positions()
-    assert len(keys) == 36
+    assert len(keys) == 34
     want = {SHIELD / 'fortemis.dtsi': layout(keys)}
     for half in ('left', 'right'):
         want[SHIELD / f'fortemis_{half}.overlay'] = gpios(keys, half)

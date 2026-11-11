@@ -1,5 +1,12 @@
 # Fortemis: goals and requirements
 
+> **2026-11-10 branch revision:** the current design starts from the Forager's finger layout
+> and exactly two stock-position thumbs per half. Only the pinky-to-ring home-key stagger
+> changes to match the measured Sweep (12.026 mm); the other Forager drops remain. Existing
+> 0/0/0/4/10-degree splay and enclosure features are retained. This supersedes the older
+> all-column Sweep stagger, 15% bonus and extended three-thumb arc requirements below.
+> See [the redesign](../design/forager-sweep-stagger/README.md).
+
 Fortemis is a low-profile, wireless, split keyboard designed from scratch. It combines three boards
 the owner already uses:
 

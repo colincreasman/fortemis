@@ -9,8 +9,8 @@ other is the [sandwich case](../sandwich/README.md).
 
 | File | What it is |
 |---|---|
-| `fortemis_left_top.stl`, `fortemis_right_top.stl` | Top plates: 147.9 × 122.1 × 2.2 mm |
-| `fortemis_left_base.stl`, `fortemis_right_base.stl` | Bases: 147.9 × 122.1 × 6.2 mm |
+| `fortemis_left_top.stl`, `fortemis_right_top.stl` | Top plates: 127.3 × 101.8 × 2.2 mm |
+| `fortemis_left_base.stl`, `fortemis_right_base.stl` | Bases: 127.3 × 101.8 × 6.2 mm |
 
 The parts are in the assembly's coordinates (z = 0 is the PCB's bottom face), so a top and base
 loaded together line up.

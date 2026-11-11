@@ -6,3 +6,4 @@ matplotlib>=3.8
 # Also for case_sandwich.py (tested with trimesh 5.1.1, rtree 1.4.1)
 trimesh>=4.0
 rtree>=1.0
+PyYAML>=6.0

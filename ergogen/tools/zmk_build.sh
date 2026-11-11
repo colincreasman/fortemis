@@ -9,12 +9,14 @@
 set -eu
 
 repo=$(cd "$(dirname "$0")/../.." && pwd)
-mkdir -p "$repo/firmware"
+output=${FORTEMIS_FIRMWARE_OUTPUT:-"$repo/firmware"}
+volume=${FORTEMIS_ZMK_VOLUME:-fortemis-zmk}
+mkdir -p "$output"
 
 docker run --rm \
-    -v fortemis-zmk:/workspace \
+    -v "$volume":/workspace \
     -v "$repo":/repo:ro \
-    -v "$repo/firmware":/out \
+    -v "$output":/out \
     zmkfirmware/zmk-build-arm:stable sh -euc '
 cd /workspace
 rm -rf config build

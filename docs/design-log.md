@@ -12,9 +12,9 @@ and progress. Newest entries are at the bottom. Requirement IDs (L1, E4, C1, …
 | Reference geometry (Sweep, TOTEM, Forager) | Extracted and checked |
 | Controller and diode decision | Decided: XIAO nRF52840 **Plus**, no diodes (D4) |
 | Power switch part | Chosen: MSK12C02 (TOTEM's part) on a PCB tab through the base wall (D6) |
-| Ergogen layout (`ergogen/config.yaml`) | Done (v0.4.0): 36 keys, thumbs on the Totemist's thumb arc 15 mm farther out (D3, revised 2026-10-09), board outline, controller, power-switch tab, screw nuts and battery placed |
-| PCB routing, DRC, fabrication files | Done (v0.4.0): both halves routed, KiCad DRC 0 errors / 0 warnings / 0 unconnected. Gerbers, and BOM and placement files for JLCPCB assembly, in `pcb/fab/` |
-| Case STLs | Done (v0.4.0): two styles, side by side in `case/`. The Forager-style enclosed case (`case/enclosed/`, `ergogen/tools/case.py`) and, since 2026-10-13, the Totemist-style sandwich case (`case/sandwich/`, `ergogen/tools/case_sandwich.py`, C4). Both are checked against models of the components |
+| Ergogen layout (`ergogen/config.yaml`) | v0.5.0 on `forager-sweep-stagger`: 34 keys, stock Forager thumbs and other home-row drops, Sweep pinky-to-ring drop, existing splay |
+| PCB routing, DRC, fabrication files | v0.5.0: both halves routed; KiCad DRC 0 errors / 0 warnings / 0 unconnected. New Gerbers, BOM and placements in `pcb/fab/` |
+| Case STLs | v0.5.0: both styles rebuilt and modeled component-fit checks pass; sandwich STLs watertight after reload |
 | ZMK firmware | Done: shield and config in this repository (ZMK v0.3.0), standalone and PandaKB dongle modes, ZMK Studio. All six images build and every key traces to the right PCB switch; not yet tried on hardware. |
 | Build guide and parts list | Done: [build-guide.md](build-guide.md), with links for every part |
 
@@ -496,6 +496,43 @@ Checks:
 | ZMK Studio's key layout against the switch centres on the PCBs | ✅ Within 0.18 mm (rounding) |
 | NFC pins | ✅ The startup code that frees them is compiled into all three half images |
 | On real hardware | Not yet: no boards have been built |
+
+## 2026-11-10: Forager-based redesign (v0.5.0)
+
+Branch `forager-sweep-stagger` starts from the latest Fortemis history without changing `main`.
+The stock Forager is the ergonomic baseline: 18 by 17 mm spacing, two thumbs at the original
+positions, ring/index/inner home-key drops of 5/3/5 mm below middle. The previous extended
+three-thumb arc and 15% extra stagger are removed.
+
+The user asked both for only the outer column to change and for Sweep-relative column geometry.
+This branch takes the former as the controlling constraint: the Sweep Bling LP's actual
+pinky-to-ring home-key drop is 12.026 mm, so pinky is 17.026 mm below middle while ring remains
+5 mm below middle. This is not the all-column Sweep stagger. The previous splay remains
+0/0/0/4/10 degrees from inner to outer. Thumb positions are measured from the Forager PCB:
+(2.749, 21.600) and (17.372, 32.832) mm relative to inner bottom, y toward the user, both at
+25 degrees. The halves mirror correctly and modeled minimum keycap clearance is 0.5 mm.
+
+This retains the previous Fortemis electronics and enclosure features rather than copying
+the Forager circuit: XIAO Plus, diodeless wiring, accessible power switch, reset lever and
+light pipe. Magnetic tenting legs remain absent. The battery moves 2 mm left and 4 mm upward
+on the left half (mirrored on the right) to clear the smaller base.
+
+Both PCBs are rerouted with zero KiCad DRC errors, warnings and unconnected nets. The Gerber,
+BOM and placement packages are rebuilt; each BOM has 17 sockets. Every routed switch position
+and pin is checked against Ergogen, and the generated 34-key shield matches the PCBs. Original
+Forager thumb bindings remain; the old extra-thumb Esc/media and Delete bindings are removed.
+The Enter/Backspace maintenance combo moves to positions 30 and 33.
+
+Both case styles are rebuilt at approximately 127.3 by 101.8 mm per half. Both pass modeled
+component-fit checks, and sandwich keycaps clear the walls over full travel. All eight STLs
+reload watertight with consistent winding. The enclosed exporter now uses the existing sandwich
+mesh exporter (1 micrometer vertex snapping, up to 5 micrometer separation of touching vertices).
+Outline simplification changes from 0.001 to 0.005 mm to eliminate polygonized-arc loft folds;
+measured outline deviations are below 0.005 mm.
+
+All six `build.yaml` firmware targets built successfully in the local ZMK Docker image.
+The locally built UF2s were saved to `firmware/forager-sweep-stagger/`, which is not tracked.
+No physical print, assembly, key feel or electrical operation has been validated.
 
 Problems found along the way, and their fixes:
 

@@ -1,12 +1,16 @@
 # Fortemis ZMK Config
 
+> **This branch:** [Forager with Sweep pinky stagger](design/forager-sweep-stagger/README.md).
+> PCB, fabrication packages, both case styles and the shield use the new 34-key layout.
+> The previous 36-key design remains on `main`. Physical fit is untested.
+
 ZMK config for the Fortemis keyboard (Forager+Totem+FerrisSweep)
 
 ## Hardware design
 
 Fortemis is designed from scratch with [Ergogen](https://docs.ergogen.xyz), KiCad and a
-Forager-style enclosed case. It has the Ferris Sweep's column stagger, TOTEM's column splay, and
-three thumb keys per half on the Totemist's thumb arc, 15 mm farther out than the Totemist's. None
+Forager-style enclosed case. It keeps the Forager's other column drops and two-thumb placement,
+uses the Sweep's pinky-to-ring drop, and retains the 0/0/0/4/10-degree column splay. None
 has been built yet, so nothing has been tried on hardware.
 
 - [docs/requirements.md](docs/requirements.md): goals and requirements
@@ -49,8 +53,9 @@ This repository is also the keyboard's [ZMK](https://zmk.dev) module and config,
   over USB or Bluetooth. Unlock it with the maintenance layer's U (below).
 
 The keymap (`boards/shields/fortemis/fortemis.keymap`) is the owner's Forager keymap: QWERTY with
-home-row mods and four layers. The near and far thumbs keep the Forager thumbs' keys, and the new
-tuck thumbs are Esc (tap) / media layer (hold) on the left and Delete on the right.
+home-row mods and four layers. The two thumbs per half keep the Forager bindings:
+Enter, Shift/Tab, number layer/Space, and Backspace. The former extra-thumb bindings are removed.
+The media layer remains available through ZMK Studio remapping.
 
 Holding both near thumbs (Enter + Backspace) gives the maintenance layer:
 
@@ -69,6 +74,14 @@ artifact holds the `.uf2` files. Or build them locally with Docker:
 
 ```sh
 ergogen/tools/zmk_build.sh   # every image in build.yaml -> firmware/*.uf2
+```
+
+For this branch, isolated local validation writes to `firmware/forager-sweep-stagger/`:
+
+```sh
+FORTEMIS_ZMK_VOLUME=fortemis-forager-sweep-stagger \
+FORTEMIS_FIRMWARE_OUTPUT="$PWD/firmware/forager-sweep-stagger" \
+ergogen/tools/zmk_build.sh
 ```
 
 The pin lists and Studio's key layout in the shield are generated from the PCBs, so re-run this

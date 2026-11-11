@@ -4,31 +4,31 @@
  "halves": {
   "fortemis_left": {
    "shell": {
-    "widest_roof_span_mm": 10.4,
-    "rim_area_mm2": 3442.5,
-    "shelf_area_mm2": 384.9,
-    "hollow_area_mm2": 1624.0,
+    "widest_roof_span_mm": 10.7,
+    "rim_area_mm2": 3077.6,
+    "shelf_area_mm2": 151.1,
+    "hollow_area_mm2": 1368.8,
     "keycaps_past_outline_mm2": 0.0,
     "rim_z": 10.65,
     "plate_top_z": 3.8,
     "shelf_z": 3.8,
     "rim_above_pcb": 9.05,
     "cap_top_above_rim_mbk": 1.45,
-    "trimmed_mm3": 69.08
+    "trimmed_mm3": 89.95
    },
    "keycap_check": {
     "part": "top",
     "pieces": 1,
-    "genus": 37,
+    "genus": 50,
     "status": "NoError",
-    "volume_cm3": 23.73,
+    "volume_cm3": 21.48,
     "size_mm": [
-     147.9,
-     122.1,
+     127.3,
+     101.8,
      9.05
     ],
     "clash_mm3": {
-     "switches": 0.0,
+     "switches": -0.0,
      "keycaps, full travel": 0.0
     },
     "gap_mm": {
@@ -43,31 +43,31 @@
   },
   "fortemis_right": {
    "shell": {
-    "widest_roof_span_mm": 10.4,
-    "rim_area_mm2": 3442.5,
-    "shelf_area_mm2": 384.9,
-    "hollow_area_mm2": 1615.7,
+    "widest_roof_span_mm": 10.7,
+    "rim_area_mm2": 3077.6,
+    "shelf_area_mm2": 151.1,
+    "hollow_area_mm2": 1368.8,
     "keycaps_past_outline_mm2": 0.0,
     "rim_z": 10.65,
     "plate_top_z": 3.8,
     "shelf_z": 3.8,
     "rim_above_pcb": 9.05,
     "cap_top_above_rim_mbk": 1.45,
-    "trimmed_mm3": 68.98
+    "trimmed_mm3": 101.03
    },
    "keycap_check": {
     "part": "top",
     "pieces": 1,
-    "genus": 26,
+    "genus": 37,
     "status": "NoError",
-    "volume_cm3": 23.79,
+    "volume_cm3": 21.47,
     "size_mm": [
-     147.9,
-     122.1,
+     127.3,
+     101.8,
      9.05
     ],
     "clash_mm3": {
-     "switches": 0.0,
+     "switches": -0.0,
      "keycaps, full travel": 0.0
     },
     "gap_mm": {

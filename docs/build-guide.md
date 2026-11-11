@@ -16,8 +16,8 @@ Counts are for the whole keyboard (both halves).
 | Part | Count | Where to buy | Notes |
 |---|---|---|---|
 | Fortemis PCB, left and right | 1 of each | Any PCB maker, such as JLCPCB ([below](#ordering-the-pcbs)) | `pcb/fab/fortemis_left.zip` and `pcb/fab/fortemis_right.zip` |
-| Seeed Studio XIAO nRF52840 **Plus** | 2 | [Seeed Studio](https://www.seeedstudio.com/Seeed-Studio-XIAO-nRF52840-Plus-p-6359.html) | Must be the **Plus**. The regular XIAO nRF52840 and its Sense version, which the Forager uses, have too few pads to wire 18 keys without diodes. The XIAO nRF52840 Sense Plus has the same pads but is untested. |
-| Kailh Choc hot-swap socket (CPG135001S30) | 36 | [LCSC C5333465](https://www.lcsc.com/product-detail/C5333465.html), [Typeractive](https://typeractive.xyz/products/hotswap-sockets) (Choc, packs of 10), [lowprokb.ca](https://lowprokb.ca/products/kalih-choc-hot-swap-sockets) | 18 per half |
+| Seeed Studio XIAO nRF52840 **Plus** | 2 | [Seeed Studio](https://www.seeedstudio.com/Seeed-Studio-XIAO-nRF52840-Plus-p-6359.html) | Must be the **Plus**. The regular XIAO nRF52840 and its Sense version, which the Forager uses, have too few pads to wire 17 keys without diodes. The XIAO nRF52840 Sense Plus has the same pads but is untested. |
+| Kailh Choc hot-swap socket (CPG135001S30) | 34 | [LCSC C5333465](https://www.lcsc.com/product-detail/C5333465.html), [Typeractive](https://typeractive.xyz/products/hotswap-sockets) (Choc, packs of 10), [lowprokb.ca](https://lowprokb.ca/products/kalih-choc-hot-swap-sockets) | 17 per half |
 | M2 SMD nut, 2 mm long (SMTSO2020MTJ) | 10 | [LCSC C2916384](https://www.lcsc.com/product-detail/C2916384.html) | 5 per half. The case screws into them. |
 | SPDT slide switch (MSK12C02) | 2 | [LCSC C431540](https://www.lcsc.com/product-detail/C431540.html) | The power switches. The Ferris Sweep's K3-1296S-E1 and the C&K PCM12SMTR fit too. |
 | LiPo battery, 301230 (30 × 12 × 3 mm, about 110 mAh), without a connector | 2 | [Typeractive](https://typeractive.xyz/products/lithium-battery-110mah) ("No Connector") | **No thicker than 3 mm**: the 401230 that the Forager also takes doesn't fit. The wires are soldered to the PCB. |
@@ -26,8 +26,8 @@ Counts are for the whole keyboard (both halves).
 
 | Part | Count | Where to buy | Notes |
 |---|---|---|---|
-| Kailh Choc v1 switches | 36 | [Typeractive](https://typeractive.xyz/products/choc-switches), [lowprokb.ca](https://lowprokb.ca/products/kailh-choc-low-profile-switches) | Any type. Choc v2 switches fit the PCB, but how they fit the top plate is untested. |
-| Choc keycaps, 1u | 36 | [MBK at Typeractive](https://typeractive.xyz/products/mbk-keycaps), [DDC at lowprokb.ca](https://lowprokb.ca/products/ddc-choc-pbt-blank-keycaps) | Choc-spaced keycaps (17.5 × 16.5 mm). Keycaps made for MX spacing are too big. All 36 are 1u, thumbs included: there's no room for 1.5u. |
+| Kailh Choc v1 switches | 34 | [Typeractive](https://typeractive.xyz/products/choc-switches), [lowprokb.ca](https://lowprokb.ca/products/kailh-choc-low-profile-switches) | Any type. Choc v2 switches fit the PCB, but how they fit the top plate is untested. |
+| Choc keycaps, 1u | 34 | [MBK at Typeractive](https://typeractive.xyz/products/mbk-keycaps), [DDC at lowprokb.ca](https://lowprokb.ca/products/ddc-choc-pbt-blank-keycaps) | Choc-spaced keycaps (17.5 × 16.5 mm). Keycaps made for MX spacing are too big. All 34 are 1u, thumbs included: there's no room for 1.5u. |
 
 ### Case
 
@@ -60,7 +60,7 @@ set:
 |---|---|
 | Layers | 2 |
 | PCB thickness | 1.6 mm. The case is built around it. |
-| Size | Read from the zip: 145.5 × 119.7 mm |
+| Size | Read from the uploaded Gerbers; each case is approximately 127.3 × 101.8 mm |
 | Colour, surface finish | Any |
 | Quantity | The minimum (5 at JLCPCB). One of each half is needed. |
 

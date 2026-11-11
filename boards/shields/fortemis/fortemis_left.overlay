@@ -18,9 +18,8 @@
         , <&gpio0  5 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>  // 22 bottom middle  D5
         , <&gpio0 29 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>  // 23 bottom index   D3
         , <&gpio0 19 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>  // 24 bottom inner   D12
-        , <&gpio0  3 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>  // 30 tuck thumb     D1
-        , <&gpio0 15 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>  // 31 near thumb     D11
-        , <&gpio0  2 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>  // 32 far thumb      D0
+        , <&gpio0 15 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>  // 30 near thumb     D11
+        , <&gpio0  2 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>  // 31 far thumb      D0
         ;
     // end: generated
 };

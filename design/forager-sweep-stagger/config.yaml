@@ -1,0 +1,51 @@
+# Layout-only reference. The complete hardware generator is ergogen/config.yaml.
+meta:
+  engine: 4.2.1
+  name: forager_sweep_stagger
+  version: 0.1.0
+units:
+  kx: 18
+  ky: 17
+  ring_stagger: 4.3090
+  pinky_stagger: 9.6350
+  ring_pivot_y: -10.2303
+  middle_pivot_y: -13.1231
+points:
+  zones:
+    matrix:
+      anchor: {rotate: 10}
+      key: {spread: kx, padding: ky, width: kx, height: ky}
+      columns:
+        pinky:
+        ring:
+          key: {stagger: pinky_stagger, splay: -6, origin: [-kx/2, ring_pivot_y]}
+        middle:
+          key: {stagger: ring_stagger, splay: -4, origin: [-kx/2, middle_pivot_y]}
+        index:
+          key.stagger: -3
+        inner:
+          key.stagger: -2
+      rows:
+        bottom:
+        home:
+        top:
+    thumbs:
+      anchor:
+        - ref: matrix_inner_bottom
+          shift: [2.749, -21.6]
+          rotate: -25
+      key: {width: kx, height: ky, spread: kx}
+      columns:
+        near:
+        far:
+          key.stagger: -4
+      rows:
+        thumb:
+  mirror:
+    ref: matrix_inner_top
+    distance: 120
+outlines:
+  caps:
+    - what: rectangle
+      where: [/^matrix_/, /^thumbs_/, /^mirror_matrix_/, /^mirror_thumbs_/]
+      size: [17.5, 16.5]

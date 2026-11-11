@@ -14,7 +14,7 @@ from shapely import affinity
 
 ROOT = pathlib.Path(__file__).resolve().parents[1]
 CFG = ROOT / 'config.yaml'
-TARGET = {'ring': 8.0, 'pinky': 21.8}          # home-key drop below middle, mm (Sweep 7/19 +15%)
+TARGET = {'ring': 5.0, 'pinky': 17.026}       # Forager ring + measured Sweep pinky-to-ring drop
 CAP = (17.5, 16.5)
 
 def run(cfg_text):
